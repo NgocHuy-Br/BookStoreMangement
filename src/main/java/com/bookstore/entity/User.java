@@ -3,17 +3,21 @@ package com.bookstore.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users") // tránh xung đột với từ khóa SQL
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;
     private String password;
-    private String role; // ADMIN / EMPLOYEE
+    private String role; // "ADMIN" hoặc "EMPLOYEE"
 
-    // Getter & Setter
+    @ManyToOne
+    @JoinColumn(name = "bookstore_id")
+    private Bookstore bookstore;
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -44,5 +48,22 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Bookstore getBookstore() {
+        return bookstore;
+    }
+
+    public void setBookstore(Bookstore bookstore) {
+        this.bookstore = bookstore;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

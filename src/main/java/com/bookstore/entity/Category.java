@@ -1,21 +1,19 @@
 package com.bookstore.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 public class Category {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @OneToMany(mappedBy = "category")
-    private List<Book> books;
+    @ManyToOne
+    private Bookstore bookstore;
 
-    // Getter & Setter
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -32,11 +30,16 @@ public class Category {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
-        return books;
+    public Bookstore getBookstore() {
+        return bookstore;
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setBookstore(Bookstore bookstore) {
+        this.bookstore = bookstore;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{id=" + id + ", name='" + name + "'}";
     }
 }

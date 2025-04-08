@@ -1,31 +1,26 @@
 package com.bookstore.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 public class Book {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
     private String author;
-    private double price;
-    private int stock;
+    private Double price;
+    private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "bookstore_id")
+    private Bookstore bookstore;
+
+    @ManyToOne
     private Category category;
 
-    @OneToMany(mappedBy = "book")
-    private List<ImportDetail> importDetails;
-
-    @OneToMany(mappedBy = "book")
-    private List<SaleDetail> saleDetails;
-
-    // Getter & Setter
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -50,20 +45,28 @@ public class Book {
         this.author = author;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public int getStock() {
-        return stock;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Bookstore getBookstore() {
+        return bookstore;
+    }
+
+    public void setBookstore(Bookstore bookstore) {
+        this.bookstore = bookstore;
     }
 
     public Category getCategory() {
@@ -74,19 +77,8 @@ public class Book {
         this.category = category;
     }
 
-    public List<ImportDetail> getImportDetails() {
-        return importDetails;
-    }
-
-    public void setImportDetails(List<ImportDetail> importDetails) {
-        this.importDetails = importDetails;
-    }
-
-    public List<SaleDetail> getSaleDetails() {
-        return saleDetails;
-    }
-
-    public void setSaleDetails(List<SaleDetail> saleDetails) {
-        this.saleDetails = saleDetails;
+    @Override
+    public String toString() {
+        return "Book{id=" + id + ", title='" + title + "', author='" + author + "'}";
     }
 }

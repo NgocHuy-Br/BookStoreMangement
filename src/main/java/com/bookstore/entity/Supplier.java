@@ -1,17 +1,20 @@
 package com.bookstore.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Customer {
+public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
     private String phone;
-    private String email;
-    private Integer loyaltyPoints = 0;
+    private String address;
 
     @ManyToOne
     private Bookstore bookstore;
@@ -41,20 +44,12 @@ public class Customer {
         this.phone = phone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getAddress() {
+        return address;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getLoyaltyPoints() {
-        return loyaltyPoints;
-    }
-
-    public void setLoyaltyPoints(Integer loyaltyPoints) {
-        this.loyaltyPoints = loyaltyPoints;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Bookstore getBookstore() {
@@ -67,6 +62,6 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{id=" + id + ", name='" + name + "', phone='" + phone + "'}";
+        return "Supplier{id=" + id + ", name='" + name + "'}";
     }
 }
