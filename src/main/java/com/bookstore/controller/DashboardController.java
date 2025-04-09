@@ -17,7 +17,7 @@ public class DashboardController {
 
         User user = (User) userObj;
         if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-            return "dashboard-admin";
+            return "admin/dashboard-admin";
         } else {
             return "redirect:/auth/login";
         }
