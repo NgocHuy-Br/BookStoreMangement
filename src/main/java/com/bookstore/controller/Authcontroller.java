@@ -1,8 +1,9 @@
 package com.bookstore.controller;
 
 import com.bookstore.entity.User;
-import com.bookstore.service.AuthService;
 import com.bookstore.repository.UserRepository;
+import com.bookstore.service.AuthService;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,11 +20,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    // @GetMapping("/")
-    // public String homeRedirect() {
-    // return "redirect:/auth/login";
-    // }
-
     @GetMapping("/login")
     public String showLoginPage(Model model) {
         model.addAttribute("user", new User());
@@ -33,9 +29,18 @@ public class AuthController {
     @PostMapping("/login")
     public String handleLogin(@ModelAttribute("user") User formUser, Model model, HttpSession session) {
         User user = userRepo.findByUsername(formUser.getUsername()).orElse(null);
+
         if (user != null && user.getPassword().equals(formUser.getPassword())) {
             session.setAttribute("loggedInUser", user);
-            return "redirect:/dashboard";
+
+            if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+                return "redirect:/admin/dashboard";
+            } else if ("EMPLOYEE".equalsIgnoreCase(user.getRole())) {
+                return "redirect:/employee/dashboard";
+            } else {
+                model.addAttribute("message", "Vai trò người dùng không hợp lệ!");
+                return "auth/login";
+            }
         } else {
             model.addAttribute("message", "Tên đăng nhập hoặc mật khẩu không đúng!");
             return "auth/login";

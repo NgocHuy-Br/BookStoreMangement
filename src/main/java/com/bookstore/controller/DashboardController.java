@@ -1,5 +1,6 @@
 package com.bookstore.controller;
 
+import com.bookstore.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,12 +8,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DashboardController {
 
-    @GetMapping("/dashboard")
-    public String showDashboard(HttpSession session) {
-        if (session.getAttribute("loggedInUser") == null) {
+    @GetMapping("/admin/dashboard")
+    public String adminDashboard(HttpSession session) {
+        Object userObj = session.getAttribute("loggedInUser");
+        if (userObj == null) {
             return "redirect:/auth/login";
         }
-        return "dashboard";
+
+        User user = (User) userObj;
+        if ("ADMIN".equalsIgnoreCase(user.getRole())) {
+            return "dashboard-admin";
+        } else {
+            return "redirect:/auth/login";
+        }
+    }
+
+    @GetMapping("/employee/dashboard")
+    public String employeeDashboard(HttpSession session) {
+        Object userObj = session.getAttribute("loggedInUser");
+        if (userObj == null) {
+            return "redirect:/auth/login";
+        }
+
+        User user = (User) userObj;
+        if ("EMPLOYEE".equalsIgnoreCase(user.getRole())) {
+            return "dashboard-employee";
+        } else {
+            return "redirect:/auth/login";
+        }
     }
 
     @GetMapping("/auth/logout")
