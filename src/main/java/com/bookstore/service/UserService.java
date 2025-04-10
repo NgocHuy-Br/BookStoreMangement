@@ -2,6 +2,7 @@ package com.bookstore.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bookstore.entity.User;
@@ -16,14 +17,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> searchAndSort(String keyword, boolean ascending) {
-        if (ascending) {
-            return userRepository.findByUserNameContainingIgnoreCaseOrderByUserNameAsc(keyword);
-        } else {
-            return userRepository.findByUserNameContainingIgnoreCaseOrderByUserNameDesc(keyword);
-        }
-    }
-
     public User getById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -35,4 +28,39 @@ public class UserService {
     public void save(User user) {
         userRepository.save(user);
     }
+
+    @Autowired
+    private UserRepository userRepo;
+
+    public List<User> getAllEmployees() {
+        return userRepo.findByRole("EMPLOYEE");
+    }
+
+    public List<User> searchEmployeesByUsername(String keyword) {
+        return userRepo.findByUsernameContainingIgnoreCaseAndRole(keyword, "EMPLOYEE");
+    }
+
+    public User getUserById(Long id) {
+        return userRepo.findById(id).orElse(null);
+    }
+
+    public void updateUserInfo(User employee) {
+        // Bạn có thể cập nhật các field cần thiết (không bao gồm password nếu không cập
+        // nhật)
+        userRepo.save(employee);
+    }
+
+    public void deleteUser(Long id) {
+        userRepo.deleteById(id);
+
+    }
+
+    public List<User> getEmployeesByBookstore(int bookstoreId) {
+        return userRepo.findByRoleAndBookstore_Id("EMPLOYEE", bookstoreId);
+    }
+
+    public void saveEmployee(User employee) {
+        userRepo.save(employee);
+    }
+
 }
