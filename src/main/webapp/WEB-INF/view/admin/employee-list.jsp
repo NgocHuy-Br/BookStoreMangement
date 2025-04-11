@@ -2,46 +2,62 @@
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
         <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-            <div class="container mt-4">
-                <h4><i class="fa-solid fa-users"></i> Danh sách nhân viên</h4>
+            <html>
 
-                <form class="d-flex mb-3" method="get" action="/admin/employee">
-                    <input type="text" name="keyword" value="${keyword}" class="form-control me-2"
-                        placeholder="Tìm theo tên đăng nhập...">
-                    <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-magnifying-glass"></i> Tìm
-                        kiếm</button>
-                </form>
+            <head>
+                <title>Danh sách nhân viên</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+            </head>
 
-                <a href="/admin/employee/create" class="btn btn-outline-primary mb-3">
-                    <i class="fa-solid fa-plus"></i> Thêm mới tài khoản nhân viên
-                </a>
+            <body>
+                <div class="container mt-5">
+                    <div class="text-center mb-4">
+                        <h3>📋 Danh sách nhân viên</h3>
+                    </div>
 
-                <table class="table table-bordered table-striped text-center align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th><i class="fa-solid fa-user"></i> Tên đăng nhập</th>
-                            <th><i class="fa-solid fa-user-shield"></i> Vai trò</th>
-                            <th><i class="fa-solid fa-store"></i> Nhà sách</th>
-                            <th><i class="fa-solid fa-lock"></i> Mật khẩu</th>
-                            <th><i class="fa-solid fa-wrench"></i> Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${employees}" var="emp" varStatus="loop">
+                    <form method="get" action="/admin/employee" class="row mb-3 justify-content-center">
+                        <div class="col-md-4">
+                            <input type="text" name="keyword" value="${keyword}" class="form-control"
+                                placeholder="Tìm theo tên đăng nhập..." />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </div>
+                    </form>
+
+                    <div class="mb-3 text-end">
+                        <a href="/admin/employee/create" class="btn btn-success">➕ Thêm mới tài khoản nhân viên</a>
+                    </div>
+
+                    <table class="table table-bordered table-hover text-center align-middle">
+                        <thead class="table-light">
                             <tr>
-                                <td>${loop.index + 1}</td>
-                                <td>${emp.username}</td>
-                                <td>${emp.role}</td>
-                                <td>${emp.bookstore.name}</td>
-                                <td>******</td>
-                                <td>
-                                    <a href="/admin/employee/edit/${emp.id}" class="btn btn-warning btn-sm">Sửa</a>
-                                    <a href="/admin/employee/delete/${emp.id}" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Bạn có chắc muốn xóa nhân viên này không?')">Xóa</a>
-                                </td>
+                                <th>Thứ tự</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Vai trò</th>
+                                <th>Nhà sách</th>
+                                <th>Mật khẩu</th>
+                                <th>Thao tác</th>
                             </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${employees}" var="e" varStatus="loop">
+                                <tr>
+                                    <td>${loop.index + 1}</td>
+                                    <td>${e.username}</td>
+                                    <td>${e.role}</td>
+                                    <td>${e.bookstore.name}</td>
+                                    <td>*****</td>
+                                    <td>
+                                        <a href="/admin/employee/edit/${e.id}" class="btn btn-sm btn-warning">Sửa</a>
+                                        <a href="/admin/employee/delete/${e.id}" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </body>
+
+            </html>

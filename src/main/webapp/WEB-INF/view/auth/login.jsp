@@ -36,7 +36,7 @@
 
                             <hr>
                             <div class="text-center">
-                                <p>Chưa có tài khoản? <a href="/auth/register">Đăng ký ngay</a></p>
+                                <p>Bạn chưa có tài khoản? <a href="/auth/register">Đăng ký</a></p>
                             </div>
                         </div>
                     </div>

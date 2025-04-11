@@ -60,11 +60,7 @@ public class ManageEmployeeController {
 
     // Hiển thị form chỉnh sửa nhân viên
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model, HttpSession session) {
-        User currentUser = (User) session.getAttribute("loggedInUser");
-        if (currentUser == null || !"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
-            return "redirect:/auth/login";
-        }
+    public String showEditForm(@PathVariable Long id, Model model) {
         User employee = userService.getUserById(id);
         model.addAttribute("employee", employee);
         return "admin/employee-edit";
@@ -73,9 +69,12 @@ public class ManageEmployeeController {
     // Xử lý cập nhật thông tin nhân viên
     @PostMapping("/edit")
     public String updateEmployee(@ModelAttribute("employee") User employee) {
-        // Đảm bảo role không bị thay đổi
-        employee.setRole("EMPLOYEE");
-        userService.updateUserInfo(employee);
+        // Không update role và bookstore
+        User existingUser = userService.getUserById(employee.getId());
+        existingUser.setUsername(employee.getUsername());
+        existingUser.setPassword(employee.getPassword());
+
+        userService.saveEmployee(existingUser);
         return "redirect:/admin/employee";
     }
 
