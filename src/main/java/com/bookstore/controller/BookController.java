@@ -94,12 +94,20 @@ public class BookController {
     // }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("book", bookService.getById(id));
+    public String showEditForm(@PathVariable Long id, Model model, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        Book book = bookService.getById(id);
+
+        model.addAttribute("book", book);
+
+        // ✅ Thêm danh sách category hiện có trong nhà sách
+        List<Category> categories = categoryService.getCategoriesByBookstore(currentUser.getBookstore());
+        model.addAttribute("categories", categories);
+
         return "admin/book-edit";
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/edit/{id}")
     public String updateBook(@ModelAttribute("book") Book book, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         book.setBookstore(user.getBookstore());
@@ -107,9 +115,23 @@ public class BookController {
         return "redirect:/book";
     }
 
+    // @GetMapping("/delete/{id}")
+    // public String deleteBook(@PathVariable Long id) {
+    // bookService.deleteById(id);
+    // return "redirect:/book";
+    // }
     @GetMapping("/delete/{id}")
-    public String deleteBook(@PathVariable Long id) {
-        bookService.deleteById(id);
+    public String deleteBook(@PathVariable Long id, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        if (currentUser == null) {
+            return "redirect:/auth/login";
+        }
+
+        Book book = bookService.getById(id);
+        if (book != null && book.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
+            bookService.deleteById(id);
+        }
         return "redirect:/book";
     }
+
 }

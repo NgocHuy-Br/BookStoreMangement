@@ -65,12 +65,12 @@
                                     <td>${book.quantity}</td>
                                     <td>${book.category.name}</td>
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/books/edit/${book.id}"
-                                            class="btn btn-warning btn-sm btn-action">Sửa</a>
-                                        <a href="${pageContext.request.contextPath}/books/delete/${book.id}"
-                                            class="btn btn-danger btn-sm btn-action"
-                                            onclick="return confirm('Bạn có chắc chắn muốn xóa sách này không?')">Xóa</a>
+                                        <a href="/book/edit/${book.id}" class="btn btn-warning btn-sm">Sửa</a>
+                                        <a href="/book/delete/${book.id}"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa sách này?')"
+                                            class="btn btn-danger btn-sm">Xóa</a>
                                     </td>
+
                                 </tr>
                             </c:forEach>
                         </tbody>

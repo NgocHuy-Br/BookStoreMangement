@@ -40,6 +40,7 @@
                                             <div class="d-flex gap-2">
                                                 <a href="/category/create?returnUrl=/book/create"
                                                     class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
+
                                                 <form:select path="category.id" class="form-select">
                                                     <form:options items="${categories}" itemValue="id"
                                                         itemLabel="name" />
