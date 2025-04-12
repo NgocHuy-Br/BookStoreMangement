@@ -35,21 +35,22 @@
                                         <label class="form-label">Tồn kho:</label>
                                         <form:input path="quantity" type="number" class="form-control"
                                             readonly="true" />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Danh mục:</label>
-                                        <div class="d-flex gap-2">
-                                            <a href="/category/create" class="btn btn-sm btn-outline-primary">➕ Thêm
-                                                danh mục</a>
-                                            <form:select path="category.id" class="form-select">
-                                                <form:options items="${categories}" itemValue="id" itemLabel="name" />
-                                            </form:select>
+                                        <div class="mb-3">
+                                            <label class="form-label">Danh mục:</label>
+                                            <div class="d-flex gap-2">
+                                                <a href="/category/create?returnUrl=/book/create"
+                                                    class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
+                                                <form:select path="category.id" class="form-select">
+                                                    <form:options items="${categories}" itemValue="id"
+                                                        itemLabel="name" />
+                                                </form:select>
+                                            </div>
                                         </div>
-                                    </div>
 
 
-                                    <button type="submit" class="btn btn-success">Lưu</button>
-                                    <a href="/admin/book" class="btn btn-secondary">Hủy</a>
+
+                                        <button type="submit" class="btn btn-success">Lưu</button>
+                                        <a href="/admin/book" class="btn btn-secondary">Hủy</a>
                                 </form:form>
                             </div>
                         </div>

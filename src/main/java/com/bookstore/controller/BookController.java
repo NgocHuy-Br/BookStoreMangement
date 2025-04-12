@@ -2,8 +2,11 @@ package com.bookstore.controller;
 
 import com.bookstore.entity.Book;
 import com.bookstore.entity.Bookstore;
+import com.bookstore.entity.Category;
 import com.bookstore.entity.User;
 import com.bookstore.service.BookService;
+import com.bookstore.service.CategoryService;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,11 +34,32 @@ public class BookController {
         return "admin/book-list";
     }
 
+    @Autowired
+    private CategoryService categoryService;
+
     @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("book", new Book());
+    public String showCreateBookForm(Model model, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        if (currentUser == null) {
+            return "redirect:/auth/login";
+        }
+
+        Book book = new Book();
+        book.setQuantity(0); // số lượng mặc định
+
+        // Lấy danh sách danh mục theo bookstore của admin đang đăng nhập
+        List<Category> categories = categoryService.getCategoriesByBookstore(currentUser.getBookstore());
+
+        model.addAttribute("book", book);
+        model.addAttribute("categories", categories);
         return "admin/book-create";
     }
+
+    // @GetMapping("/create")
+    // public String showCreateForm(Model model) {
+    // model.addAttribute("book", new Book());
+    // return "admin/book-create";
+    // }
 
     @PostMapping("create")
     public String createBook(@ModelAttribute("book") Book book, HttpSession session) {
