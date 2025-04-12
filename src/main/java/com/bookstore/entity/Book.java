@@ -11,7 +11,7 @@ public class Book {
     private String title;
     private String author;
     private Double price;
-    private Integer quantity;
+    private Integer quantity = 0;
 
     @ManyToOne
     @JoinColumn(name = "bookstore_id")

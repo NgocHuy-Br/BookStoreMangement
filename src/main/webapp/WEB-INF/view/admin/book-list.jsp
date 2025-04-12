@@ -38,7 +38,7 @@
                     </form>
 
                     <div class="text-end mb-3">
-                        <a href="${pageContext.request.contextPath}/books/create" class="btn btn-success">
+                        <a href="${pageContext.request.contextPath}/book/create" class="btn btn-success">
                             <i class="bi bi-plus-circle"></i> Thêm sách mới
                         </a>
                     </div>

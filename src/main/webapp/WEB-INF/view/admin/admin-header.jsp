@@ -5,9 +5,9 @@
     <div
       style="background-color: #f8f9fa; border-bottom: 1px solid #ddd; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;">
       <!-- Bên trái: logo và tiêu đề -->
-      <div style="font-size: 24px; font-weight: bold; color: #2c7be5;">
+      <a href="/admin/dashboard" style="font-size: 24px; font-weight: bold; color: #2c7be5; text-decoration: none;">
         📚 Quản trị Nhà sách
-      </div>
+      </a>
 
       <!-- Bên phải: thông tin tài khoản -->
       <div style="text-align: right;">
@@ -32,7 +32,7 @@
         🎥 Quản lý nhân viên
       </a>
 
-      <a href="/admin/book" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/book" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
               <c:if test='${activeTab eq " book"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
         📚 Quản lý sách

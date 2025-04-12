@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/book")
+@RequestMapping("/book")
 public class BookController {
     @Autowired
     private BookService bookService;
@@ -37,7 +37,7 @@ public class BookController {
         return "admin/book-create";
     }
 
-    @PostMapping("/create")
+    @PostMapping("create")
     public String createBook(@ModelAttribute("book") Book book, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         book.setBookstore(user.getBookstore());
@@ -85,7 +85,7 @@ public class BookController {
 
     @GetMapping("/delete/{id}")
     public String deleteBook(@PathVariable Long id) {
-        bookService.delete(id);
+        bookService.deleteById(id);
         return "redirect:/book";
     }
 }
