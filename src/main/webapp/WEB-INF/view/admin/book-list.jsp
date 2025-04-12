@@ -1,4 +1,4 @@
-<%@ include file="admin-header.jsp" %>
+<%@ include file="/WEB-INF/view/common/dashboard-header.jsp" %>
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
         <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
