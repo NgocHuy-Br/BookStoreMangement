@@ -19,6 +19,20 @@
                                 <h3 class="text-center mb-4">Thêm sách mới</h3>
                                 <form:form method="post" modelAttribute="book">
                                     <div class="mb-3">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Danh mục:</label>
+                                            <div class="d-flex gap-2">
+                                                <a href="/category?returnUrl=/book/create"
+                                                    class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
+
+                                                <form:select path="category.id" class="form-select">
+                                                    <form:options items="${categories}" itemValue="id"
+                                                        itemLabel="name" />
+                                                </form:select>
+                                            </div>
+                                        </div>
+
                                         <label class="form-label">Tên sách:</label>
                                         <form:input path="title" class="form-control" required="required" />
                                     </div>
@@ -35,18 +49,7 @@
                                         <label class="form-label">Tồn kho:</label>
                                         <form:input path="quantity" type="number" class="form-control"
                                             readonly="true" />
-                                        <div class="mb-3">
-                                            <label class="form-label">Danh mục:</label>
-                                            <div class="d-flex gap-2">
-                                                <a href="/category/create?returnUrl=/book/create"
-                                                    class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
 
-                                                <form:select path="category.id" class="form-select">
-                                                    <form:options items="${categories}" itemValue="id"
-                                                        itemLabel="name" />
-                                                </form:select>
-                                            </div>
-                                        </div>
 
 
 

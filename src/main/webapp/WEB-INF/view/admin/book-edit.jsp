@@ -18,6 +18,20 @@
                                 <h3 class="text-center mb-4">Chỉnh sửa sách</h3>
                                 <form:form method="post" modelAttribute="book">
                                     <form:hidden path="id" />
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Danh mục:</label>
+                                        <div class="d-flex gap-2">
+                                            <a href="/category?returnUrl=/book/edit"
+                                                class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
+
+                                            <form:select path="category.id" class="form-select">
+                                                <form:options items="${categories}" itemValue="id" itemLabel="name" />
+                                            </form:select>
+                                        </div>
+                                    </div>
+
+
                                     <div class="mb-3">
                                         <label class="form-label">Tên sách:</label>
                                         <form:input path="title" class="form-control" required="required" />
