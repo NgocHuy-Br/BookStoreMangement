@@ -30,6 +30,13 @@
                             </div>
                         </div>
 
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger mt-3">${error}</div>
+                        </c:if>
+
+                        <c:if test="${not empty success}">
+                            <div class="alert alert-success mt-3">${success}</div>
+                        </c:if>
 
                         <!-- Tiêu đề danh sách -->
                         <div class="row justify-content-center mb-3">
@@ -57,8 +64,10 @@
                                                 <td class="text-center">
                                                     <a href="/category/edit/${cate.id}"
                                                         class="btn btn-warning btn-sm">Sửa</a>
-                                                    <a href="/category/delete/${cate.id}" class="btn btn-danger btn-sm"
+                                                    <a href="/category/delete/${cate.id}?returnUrl=${returnUrl}"
+                                                        class="btn btn-danger btn-sm"
                                                         onclick="return confirm('Bạn có chắc muốn xóa danh mục này?');">Xóa</a>
+
                                                 </td>
                                             </tr>
                                         </c:forEach>

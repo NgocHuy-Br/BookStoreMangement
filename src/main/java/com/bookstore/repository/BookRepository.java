@@ -9,4 +9,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByBookstore(Bookstore bookstore);
 
     List<Book> findByBookstoreAndTitleContainingIgnoreCase(Bookstore bookstore, String title);
+
+    boolean existsByCategoryId(Long categoryId);
+
 }
