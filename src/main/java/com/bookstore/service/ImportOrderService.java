@@ -48,4 +48,34 @@ public class ImportOrderService {
             importItemRepository.save(item);
         }
     }
+
+    public void createImportOrder(User user, Long supplierId, List<Long> bookIds,
+            List<Integer> quantities, List<Double> prices) {
+
+        ImportOrder order = new ImportOrder();
+        order.setCreatedAt(LocalDateTime.now());
+        order.setCreatedBy(user);
+        order.setBookstore(user.getBookstore());
+
+        // Chỉ set 1 lần supplier cho đơn hàng
+        order.setSupplier(supplierRepository.findById(supplierId).orElse(null));
+
+        importOrderRepository.save(order);
+
+        for (int i = 0; i < bookIds.size(); i++) {
+            ImportOrderItem item = new ImportOrderItem();
+            Book book = bookRepository.findById(bookIds.get(i)).orElse(null);
+            item.setBook(book);
+            item.setImportOrder(order);
+            item.setQuantity(quantities.get(i));
+            item.setUnitPrice(prices.get(i));
+
+            // Cập nhật tồn kho
+            book.setQuantity(book.getQuantity() + quantities.get(i));
+            bookRepository.save(book);
+
+            importItemRepository.save(item);
+        }
+    }
+
 }

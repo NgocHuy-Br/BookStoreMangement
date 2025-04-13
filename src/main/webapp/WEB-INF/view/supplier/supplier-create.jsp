@@ -18,6 +18,10 @@
                             <div class="col-md-6 col-12">
                                 <h3 class="text-center mb-4">Thêm nhà cung cấp</h3>
 
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger text-center">${error}</div>
+                                </c:if>
+
                                 <form:form method="post" modelAttribute="supplier">
                                     <form:hidden path="id" />
                                     <input type="hidden" name="returnUrl" value="${returnUrl}" />

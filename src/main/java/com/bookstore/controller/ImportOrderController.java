@@ -5,13 +5,17 @@ import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
 import com.bookstore.repository.SupplierRepository;
 import com.bookstore.service.*;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -67,11 +71,16 @@ public class ImportOrderController {
             return "redirect:/auth/login";
 
         List<Book> books = bookRepository.findByBookstore(user.getBookstore());
-        List<Supplier> suppliers = supplierRepository.findAll();
+        // List<Supplier> suppliers = supplierRepository.findAll();
         List<Category> categories = categoryRepository.findByBookstore(user.getBookstore());
 
         model.addAttribute("books", books);
+        // model.addAttribute("suppliers", suppliers);
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        Bookstore bookstore = currentUser.getBookstore();
+        List<Supplier> suppliers = supplierRepository.findByBookstore(bookstore);
         model.addAttribute("suppliers", suppliers);
+
         model.addAttribute("categories", categories);
 
         return "import/import-create";
@@ -106,16 +115,47 @@ public class ImportOrderController {
 
     // return "redirect:/import/create?success=true";
     // }
-    @PostMapping("/create")
-    public String createImportOrder(@ModelAttribute ImportOrder importOrder, HttpSession session) {
+    // @PostMapping("/create")
+    // public String createImportOrder(@ModelAttribute ImportOrder importOrder,
+    // HttpSession session) {
+    // User currentUser = (User) session.getAttribute("loggedInUser");
+
+    // importOrder.setCreatedAt(LocalDateTime.now());
+    // importOrder.setCreatedBy(currentUser);
+    // importOrder.setBookstore(currentUser.getBookstore());
+
+    // importOrderService.save(importOrder);
+    // return "redirect:/import-order";
+    // }
+
+    @PostMapping("/save")
+    public String saveImportOrder(HttpServletRequest request, HttpSession session,
+            RedirectAttributes redirectAttributes) {
         User currentUser = (User) session.getAttribute("loggedInUser");
 
-        importOrder.setCreatedAt(LocalDateTime.now());
-        importOrder.setCreatedBy(currentUser);
-        importOrder.setBookstore(currentUser.getBookstore());
+        Long supplierId = Long.parseLong(request.getParameter("supplierId"));
+        String[] bookIds = request.getParameterValues("bookId");
+        String[] unitPrices = request.getParameterValues("unitPrice");
+        String[] quantities = request.getParameterValues("quantity");
 
-        importOrderService.save(importOrder);
-        return "redirect:/import-order";
+        List<Long> bookIdList = new ArrayList<>();
+        List<Double> priceList = new ArrayList<>();
+        List<Integer> quantityList = new ArrayList<>();
+
+        for (int i = 0; i < bookIds.length; i++) {
+            if (!bookIds[i].isEmpty()) {
+                bookIdList.add(Long.parseLong(bookIds[i]));
+                priceList.add(Double.parseDouble(unitPrices[i]));
+                quantityList.add(Integer.parseInt(quantities[i]));
+            }
+        }
+
+        importOrderService.createImportOrder(currentUser, supplierId, bookIdList, quantityList, priceList);
+
+        // ✅ Gửi thông báo thành công
+        redirectAttributes.addFlashAttribute("success", "Nhập đơn hàng thành công!");
+
+        return "redirect:/import";
     }
 
 }

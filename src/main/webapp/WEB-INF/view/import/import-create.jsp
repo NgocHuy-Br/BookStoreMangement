@@ -1,5 +1,4 @@
 <%@ include file="/WEB-INF/view/common/dashboard-header.jsp" %>
-
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
             <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -36,14 +35,35 @@
                     <div class="container mt-4">
                         <h3 class="text-center mb-4">Tạo đơn nhập hàng</h3>
 
+
+                        <c:if test="${not empty success}">
+                            <div class="alert alert-success text-center">${success}</div>
+                        </c:if>
+
+
+
                         <div class="text-center mb-3">
-                            <!-- <a href="/supplier" class="btn btn-outline-primary">➕ Thêm nhà cung cấp</a> -->
                             <a href="/supplier/create?returnUrl=/import" class="btn btn-outline-primary mb-3">
                                 <i class="bi bi-plus-circle"></i> ➕ Thêm nhà cung cấp
                             </a>
                         </div>
 
                         <form method="post" action="/import/save">
+                            <!-- Nhà cung cấp áp dụng cho cả đơn -->
+                            <div class="mb-3 row">
+                                <label class="col-sm-2 col-form-label text-end fw-bold">Chọn nhà cung cấp:</label>
+                                <div class="col-sm-6">
+                                    <select name="supplierId" class="form-select" required>
+                                        <option value="">-- Chọn --</option>
+                                        <c:forEach var="sup" items="${suppliers}">
+                                            <option value="${sup.id}">${sup.name}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr>
+
                             <table class="table table-bordered align-middle">
                                 <thead class="table-light">
                                     <tr>
@@ -51,7 +71,6 @@
                                         <th class="book-column">Tên sách</th>
                                         <th>Tác giả</th>
                                         <th>Danh mục</th>
-                                        <th>Nhà cung cấp</th>
                                         <th class="price-column">Đơn giá</th>
                                         <th class="qty-column">Số lượng</th>
                                         <th>Thao tác</th>
@@ -74,14 +93,6 @@
                                         </td>
                                         <td class="author">-</td>
                                         <td class="category">-</td>
-                                        <td>
-                                            <select name="supplierId" class="form-select" required>
-                                                <option value="">-- Chọn --</option>
-                                                <c:forEach var="sup" items="${suppliers}">
-                                                    <option value="${sup.id}">${sup.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </td>
                                         <td><input type="number" name="unitPrice" step="0.01" class="form-control"
                                                 required></td>
                                         <td><input type="number" name="quantity" class="form-control" required></td>
