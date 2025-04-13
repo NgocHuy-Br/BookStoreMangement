@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bookstore.entity.Bookstore;
 import com.bookstore.entity.User;
 import com.bookstore.repository.UserRepository;
 
@@ -55,12 +56,19 @@ public class UserService {
 
     }
 
-    public List<User> getEmployeesByBookstore(int bookstoreId) {
-        return userRepo.findByRoleAndBookstore_Id("EMPLOYEE", bookstoreId);
+    // public List<User> getEmployeesByBookstore(int bookstoreId) {
+    //     return userRepo.findByRoleAndBookstore_Id("EMPLOYEE", bookstoreId);
+    // }
+    public List<User> getEmployeesByBookstore(Bookstore bookstore) {
+        return userRepository.findByRoleAndBookstore("EMPLOYEE", bookstore);
     }
 
     public void saveEmployee(User employee) {
         userRepo.save(employee);
+    }
+
+    public boolean isUsernameExists(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 
 }

@@ -31,7 +31,8 @@ public class ManageEmployeeController {
         if (keyword != null && !keyword.isEmpty()) {
             employees = userService.searchEmployeesByUsername(keyword);
         } else {
-            employees = userService.getAllEmployees();
+            // employees = userService.getAllEmployees();
+            employees = userService.getEmployeesByBookstore(currentUser.getBookstore());
         }
         model.addAttribute("employees", employees);
         model.addAttribute("keyword", keyword);
@@ -95,12 +96,29 @@ public class ManageEmployeeController {
         return "admin/employee-create";
     }
 
+    // @PostMapping("/create")
+    // public String addEmployee(@ModelAttribute("employee") User employee,
+    // HttpSession session) {
+    // User admin = (User) session.getAttribute("loggedInUser");
+    // employee.setRole("EMPLOYEE");
+    // employee.setBookstore(admin.getBookstore());
+
+    // userService.saveEmployee(employee);
+    // return "redirect:/admin/employee";
+    // }
     @PostMapping("/create")
-    public String addEmployee(@ModelAttribute("employee") User employee, HttpSession session) {
+    public String addEmployee(@ModelAttribute("employee") User employee,
+            HttpSession session, Model model) {
         User admin = (User) session.getAttribute("loggedInUser");
+
+        if (userService.isUsernameExists(employee.getUsername())) {
+            model.addAttribute("error", "Tên đăng nhập đã tồn tại!");
+            model.addAttribute("employee", employee);
+            return "admin/employee-create";
+        }
+
         employee.setRole("EMPLOYEE");
         employee.setBookstore(admin.getBookstore());
-
         userService.saveEmployee(employee);
         return "redirect:/admin/employee";
     }

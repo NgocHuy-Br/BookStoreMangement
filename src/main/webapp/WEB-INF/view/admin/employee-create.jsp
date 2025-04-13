@@ -19,6 +19,12 @@
                             <div class="col-md-6 col-12 mx-auto">
                                 <h3 class="text-center">Thêm tài khoản nhân viên</h3>
                                 <hr />
+
+                                <!-- Thông báo lỗi nếu có -->
+                                <c:if test="${not empty error}">
+                                    <div class="alert alert-danger text-center">${error}</div>
+                                </c:if>
+
                                 <form:form method="post" action="/admin/employee/create" modelAttribute="employee">
                                     <div class="mb-3">
                                         <label class="form-label">Tên đăng nhập:</label>
