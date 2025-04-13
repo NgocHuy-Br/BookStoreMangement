@@ -21,13 +21,47 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @GetMapping("")
-    public String listBooks(@RequestParam(required = false) String keyword, Model model, HttpSession session) {
-        User user = (User) session.getAttribute("loggedInUser");
-        Bookstore bookstore = user.getBookstore();
+    // @GetMapping("")
+    // public String listBooks(@RequestParam(required = false) String keyword, Model
+    // model, HttpSession session) {
+    // User user = (User) session.getAttribute("loggedInUser");
+    // Bookstore bookstore = user.getBookstore();
 
-        List<Book> books = (keyword != null && !keyword.isEmpty()) ? bookService.searchBooks(bookstore, keyword)
-                : bookService.getBooksByBookstore(bookstore);
+    // List<Book> books = (keyword != null && !keyword.isEmpty()) ?
+    // bookService.searchBooks(bookstore, keyword)
+    // : bookService.getBooksByBookstore(bookstore);
+
+    // model.addAttribute("books", books);
+    // model.addAttribute("keyword", keyword);
+    // return "admin/book-list";
+    // }
+    // @GetMapping("")
+    // public String listBooks(@RequestParam(required = false) String keyword, Model
+    // model, HttpSession session) {
+    // User user = (User) session.getAttribute("loggedInUser");
+    // Bookstore bookstore = user.getBookstore();
+
+    // List<Book> books = (keyword != null && !keyword.trim().isEmpty())
+    // ? bookService.searchBooks(bookstore, keyword)
+    // : bookService.getBooksByBookstore(bookstore);
+
+    // model.addAttribute("books", books);
+    // model.addAttribute("keyword", keyword);
+    // return "admin/book-list";
+    // }
+    @GetMapping("")
+    public String listBooks(@RequestParam(required = false) String keyword,
+            Model model,
+            HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        Bookstore bookstore = currentUser.getBookstore();
+
+        List<Book> books;
+        if (keyword != null && !keyword.isBlank()) {
+            books = bookService.searchBooks(bookstore, keyword);
+        } else {
+            books = bookService.getBooksByBookstore(bookstore);
+        }
 
         model.addAttribute("books", books);
         model.addAttribute("keyword", keyword);

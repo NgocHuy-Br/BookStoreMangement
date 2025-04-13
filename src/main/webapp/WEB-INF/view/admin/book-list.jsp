@@ -26,8 +26,8 @@
                 <div class="container mt-5">
                     <h3 class="text-center mb-4"><i class="bi bi-book"></i> Danh sách sách</h3>
 
-                    <form class="row g-3 justify-content-center mb-3" method="get"
-                        action="${pageContext.request.contextPath}/books">
+                    <!-- <form class="row g-3 justify-content-center mb-3" method="get"
+                        action="${pageContext.request.contextPath}/book">
                         <div class="col-auto">
                             <input type="text" class="form-control" name="keyword" placeholder="Tìm theo tên sách..."
                                 value="${keyword}">
@@ -35,7 +35,18 @@
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                         </div>
+                    </form> -->
+                    <form class="row g-3 justify-content-center mb-3" method="get"
+                        action="${pageContext.request.contextPath}/book">
+                        <div class="col-auto">
+                            <input type="text" class="form-control" name="keyword"
+                                placeholder="Tìm theo tên sách, tác giả, danh mục..." value="${keyword}">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </div>
                     </form>
+
 
                     <div class="text-end mb-3">
                         <a href="${pageContext.request.contextPath}/book/create" class="btn btn-success">
