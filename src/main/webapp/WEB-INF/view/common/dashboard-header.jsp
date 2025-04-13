@@ -38,7 +38,7 @@
         📚 Quản lý sách
       </a>
 
-      <a href="/admin/import" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/import" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
               <c:if test='${activeTab eq " import"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
         🛳️ Nhập hàng
