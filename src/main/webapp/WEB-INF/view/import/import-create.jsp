@@ -107,13 +107,19 @@
                                     <input type="text" class="form-control" id="totalAmount" readonly>
                                 </div>
                             </div>
+
+                            <!-- Thêm trường VAT vào form -->
+                            <!-- VAT input -->
                             <div class="row mb-2">
                                 <label class="col-sm-2 col-form-label text-end fw-bold">Thuế VAT (%):</label>
                                 <div class="col-sm-2">
-                                    <input type="number" id="vatPercent" class="form-control" value="0"
-                                        onchange="calculateTotal()">
+                                    <input type="number" id="vatPercent" name="vat" class="form-control" value="0"
+                                        onchange="calculateTotal()" required>
                                 </div>
                             </div>
+
+
+
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label text-end fw-bold">Thành tiền:</label>
                                 <div class="col-sm-4">
@@ -129,8 +135,16 @@
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <a href="/" class="btn btn-secondary me-2">Hủy</a>
                                 <button type="submit" class="btn btn-success">✔ Nhập hàng</button>
+
+                                <c:if test="${not empty lastImportId}">
+                                    <a href="/import/pdf/${lastImportId}" class="btn btn-outline-dark ms-2">⬇ Xuất
+                                        PDF</a>
+                                </c:if>
+
+
+
+                                <a href="/import" class="btn btn-secondary me-2">Hủy</a>
                             </div>
                         </form>
                     </div>

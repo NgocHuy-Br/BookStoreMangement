@@ -3,10 +3,13 @@ package com.bookstore.controller;
 import com.bookstore.entity.*;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
+import com.bookstore.repository.ImportOrderRepository;
+import com.bookstore.repository.ImportOrderItemRepository;
 import com.bookstore.repository.SupplierRepository;
 import com.bookstore.service.*;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,12 @@ public class ImportOrderController {
 
     @Autowired
     private SupplierService supplierService;
+
+    @Autowired
+    private ImportOrderRepository importOrderRepository;
+
+    @Autowired
+    private ImportOrderItemRepository importOrderItemRepository;
 
     @Autowired
     private ImportOrderService importOrderService;
@@ -137,6 +148,12 @@ public class ImportOrderController {
         String[] bookIds = request.getParameterValues("bookId");
         String[] unitPrices = request.getParameterValues("unitPrice");
         String[] quantities = request.getParameterValues("quantity");
+        String vatStr = request.getParameter("vat");
+
+        double vat = 0.0;
+        if (vatStr != null && !vatStr.trim().isEmpty()) {
+            vat = Double.parseDouble(vatStr);
+        }
 
         List<Long> bookIdList = new ArrayList<>();
         List<Double> priceList = new ArrayList<>();
@@ -150,12 +167,44 @@ public class ImportOrderController {
             }
         }
 
-        importOrderService.createImportOrder(currentUser, supplierId, bookIdList, quantityList, priceList);
+        ImportOrder order = importOrderService.createImportOrder(currentUser, supplierId, bookIdList, quantityList,
+                priceList);
 
-        // ✅ Gửi thông báo thành công
+        // Lưu VAT vào session
+        session.setAttribute("vatForOrder_" + order.getId(), vat);
         redirectAttributes.addFlashAttribute("success", "Nhập đơn hàng thành công!");
+        redirectAttributes.addFlashAttribute("lastImportId", order.getId());
 
         return "redirect:/import";
+    }
+
+    @GetMapping("/pdf/{id}")
+    public void exportImportOrderToPDF(@PathVariable Long id, HttpServletResponse response, HttpSession session) {
+        ImportOrder order = importOrderRepository.findById(id).orElse(null);
+        if (order == null)
+            return;
+
+        List<ImportOrderItem> items = importOrderItemRepository.findByImportOrder(order);
+        double vat = 0.0;
+
+        Object vatObj = session.getAttribute("vatForOrder_" + id);
+        if (vatObj != null)
+            vat = (double) vatObj;
+
+        byte[] pdfBytes = importOrderService.exportImportOrderToPDF(order, items, vat);
+        if (pdfBytes == null)
+            return;
+
+        try {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "inline; filename=import_order_" + id + ".pdf");
+            response.setContentLength(pdfBytes.length);
+            OutputStream os = response.getOutputStream();
+            os.write(pdfBytes);
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
