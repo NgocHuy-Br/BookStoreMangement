@@ -35,12 +35,9 @@
                     <div class="container mt-4">
                         <h3 class="text-center mb-4">Tạo đơn nhập hàng</h3>
 
-
                         <c:if test="${not empty success}">
                             <div class="alert alert-success text-center">${success}</div>
                         </c:if>
-
-
 
                         <div class="text-center mb-3">
                             <a href="/supplier/create?returnUrl=/import" class="btn btn-outline-primary mb-3">
@@ -73,7 +70,7 @@
                                         <th>Danh mục</th>
                                         <th class="price-column">Đơn giá</th>
                                         <th class="qty-column">Số lượng</th>
-                                        <th>Thao tác</th>
+                                        <th>Xóa dòng</th>
                                     </tr>
                                 </thead>
                                 <tbody id="importTableBody">
@@ -93,14 +90,36 @@
                                         </td>
                                         <td class="author">-</td>
                                         <td class="category">-</td>
-                                        <td><input type="number" name="unitPrice" step="0.01" class="form-control"
-                                                required></td>
-                                        <td><input type="number" name="quantity" class="form-control" required></td>
+                                        <td><input type="number" name="unitPrice" step="1000" class="form-control price"
+                                                required onchange="calculateTotal()"></td>
+                                        <td><input type="number" name="quantity" class="form-control quantity" required
+                                                onchange="calculateTotal()"></td>
                                         <td><button type="button" class="btn btn-danger"
                                                 onclick="removeRow(this)">X</button></td>
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <!-- Tổng cộng và VAT -->
+                            <div class="row mb-2">
+                                <label class="col-sm-2 col-form-label text-end fw-bold">Tổng cộng:</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="totalAmount" readonly>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <label class="col-sm-2 col-form-label text-end fw-bold">Thuế VAT (%):</label>
+                                <div class="col-sm-2">
+                                    <input type="number" id="vatPercent" class="form-control" value="0"
+                                        onchange="calculateTotal()">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label text-end fw-bold">Thành tiền:</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="grandTotal" readonly>
+                                </div>
+                            </div>
 
                             <div class="mb-3">
                                 <button type="button" class="btn btn-outline-primary" onclick="addRow()">➕ Thêm
@@ -128,14 +147,9 @@
                         function addRow() {
                             const tbody = document.getElementById("importTableBody");
                             const newRow = tbody.rows[0].cloneNode(true);
-
-                            newRow.querySelectorAll("input, select").forEach(el => {
-                                el.value = "";
-                            });
-
+                            newRow.querySelectorAll("input, select").forEach(el => el.value = "");
                             newRow.querySelector('.author').innerText = "-";
                             newRow.querySelector('.category').innerText = "-";
-
                             tbody.appendChild(newRow);
                             updateSTT();
                         }
@@ -145,6 +159,7 @@
                             if (tbody.rows.length > 1) {
                                 button.closest("tr").remove();
                                 updateSTT();
+                                calculateTotal();
                             }
                         }
 
@@ -153,6 +168,7 @@
                             if (tbody.rows.length > 1) {
                                 tbody.deleteRow(tbody.rows.length - 1);
                                 updateSTT();
+                                calculateTotal();
                             }
                         }
 
@@ -160,6 +176,20 @@
                             document.querySelectorAll("#importTableBody .stt").forEach((cell, idx) => {
                                 cell.innerText = idx + 1;
                             });
+                        }
+
+                        function calculateTotal() {
+                            let total = 0;
+                            document.querySelectorAll("#importTableBody tr").forEach(row => {
+                                const price = parseFloat(row.querySelector("input[name='unitPrice']").value) || 0;
+                                const quantity = parseInt(row.querySelector("input[name='quantity']").value) || 0;
+                                total += price * quantity;
+                            });
+                            document.getElementById("totalAmount").value = total.toFixed(0);
+
+                            const vatPercent = parseFloat(document.getElementById("vatPercent").value) || 0;
+                            const vatAmount = total * vatPercent / 100;
+                            document.getElementById("grandTotal").value = (total + vatAmount).toFixed(0);
                         }
                     </script>
                 </body>
