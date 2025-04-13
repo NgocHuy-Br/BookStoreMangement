@@ -21,21 +21,41 @@ public class CategoryController {
     private CategoryService categoryService;
 
     // GET: Hiển thị danh sách + form thêm
+    // @GetMapping("")
+    // public String listCategories(Model model,
+    // @RequestParam(required = false) String returnUrl,
+    // HttpSession session) {
+    // User user = (User) session.getAttribute("loggedInUser");
+    // List<Category> categories =
+    // categoryService.getCategoriesByBookstore(user.getBookstore());
+
+    // model.addAttribute("categories", categories);
+    // model.addAttribute("category", new Category());
+
+    // if (returnUrl != null && !returnUrl.isEmpty()) {
+    // model.addAttribute("returnUrl", returnUrl); // Quan trọng
+    // }
+
+    // return "category/category-list";
+    // }
+
     @GetMapping("")
-    public String listCategories(Model model,
-            @RequestParam(required = false) String returnUrl,
-            HttpSession session) {
+    public String listCategories(Model model, HttpSession session,
+            @RequestParam(required = false) String returnUrl) {
         User user = (User) session.getAttribute("loggedInUser");
-        List<Category> categories = categoryService.getCategoriesByBookstore(user.getBookstore());
-
-        model.addAttribute("categories", categories);
-        model.addAttribute("category", new Category());
-
-        if (returnUrl != null && !returnUrl.isEmpty()) {
-            model.addAttribute("returnUrl", returnUrl); // Quan trọng
+        if (user == null) {
+            return "redirect:/auth/login";
         }
 
-        return "category/category-list";
+        Category category = new Category();
+        category.setBookstore(user.getBookstore());
+
+        List<Category> categories = categoryService.getCategoriesByBookstore(user.getBookstore());
+        model.addAttribute("category", category);
+        model.addAttribute("categories", categories);
+        model.addAttribute("returnUrl", returnUrl);
+
+        return "category/category-list"; // hoặc category.jsp tùy bạn đặt tên
     }
 
     // POST: Xử lý thêm mới ngay trên cùng trang
@@ -141,5 +161,36 @@ public class CategoryController {
     // ? "redirect:" + returnUrl.trim()
     // : "redirect:/book/create";
     // }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id,
+            @RequestParam(required = false) String returnUrl,
+            Model model,
+            HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        Category category = categoryService.getById(id);
+
+        if (category == null || !category.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
+            return "redirect:/category";
+        }
+
+        model.addAttribute("category", category);
+        model.addAttribute("returnUrl", returnUrl);
+        return "category/category-edit";
+    }
+
+    @PostMapping("/edit")
+    public String updateCategory(@ModelAttribute("category") Category category,
+            @RequestParam(required = false) String returnUrl,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        category.setBookstore(currentUser.getBookstore());
+
+        categoryService.saveCategory(category);
+        redirectAttributes.addFlashAttribute("success", "Cập nhật danh mục thành công!");
+
+        return "redirect:/category" + (returnUrl != null ? "?returnUrl=" + returnUrl : "");
+    }
 
 }

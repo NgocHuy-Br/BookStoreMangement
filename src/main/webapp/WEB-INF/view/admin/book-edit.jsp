@@ -22,7 +22,7 @@
                                     <div class="mb-3">
                                         <label class="form-label">Danh mục:</label>
                                         <div class="d-flex gap-2">
-                                            <a href="/category?returnUrl=/book/edit"
+                                            <a href="/category?returnUrl=/book/edit/${book.id}"
                                                 class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
 
                                             <form:select path="category.id" class="form-select">
@@ -50,7 +50,7 @@
                                         <form:input path="quantity" type="number" class="form-control"
                                             required="required" />
                                     </div>
-                                    <div class="mb-3">
+                                    <!-- <div class="mb-3">
                                         <label class="form-label">Danh mục:</label>
                                         <div class="d-flex gap-2">
                                             <a href="/category/create?returnUrl=/book/edit/${book.id}"
@@ -60,7 +60,7 @@
                                                 <form:options items="${categories}" itemValue="id" itemLabel="name" />
                                             </form:select>
                                         </div>
-                                    </div>
+                                    </div> -->
 
 
                                     <button type="submit" class="btn btn-success">Cập nhật</button>
