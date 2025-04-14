@@ -2,7 +2,7 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
         <!-- Footer chính -->
-        <div style="padding: 20px 0; text-align: center;margin-top: 60px;">
+        <div style="padding: 20px 0; text-align: center;margin-top: 5px;">
             <img src="${pageContext.request.contextPath}/image/logo-ptit.png" alt="PTIT Logo" width="120">
 
             <div style="font-size: 16px; line-height: 1.8; margin-top: 10px;">

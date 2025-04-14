@@ -154,8 +154,22 @@ public class BookController {
     // bookService.deleteById(id);
     // return "redirect:/book";
     // }
+    // @GetMapping("/delete/{id}")
+    // public String deleteBook(@PathVariable Long id, HttpSession session) {
+    // User currentUser = (User) session.getAttribute("loggedInUser");
+    // if (currentUser == null) {
+    // return "redirect:/auth/login";
+    // }
+
+    // Book book = bookService.getById(id);
+    // if (book != null &&
+    // book.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
+    // bookService.deleteById(id);
+    // }
+    // return "redirect:/book";
+    // }
     @GetMapping("/delete/{id}")
-    public String deleteBook(@PathVariable Long id, HttpSession session) {
+    public String deleteBook(@PathVariable Long id, HttpSession session, Model model) {
         User currentUser = (User) session.getAttribute("loggedInUser");
         if (currentUser == null) {
             return "redirect:/auth/login";
@@ -163,7 +177,12 @@ public class BookController {
 
         Book book = bookService.getById(id);
         if (book != null && book.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
-            bookService.deleteById(id);
+            if (bookService.isBookUsedInImportOrder(id)) {
+                // ✅ Nếu đã tồn tại trong đơn hàng thì không xóa, gắn thông báo lỗi
+                session.setAttribute("bookDeleteError", "Sách đã nằm trong đơn hàng. Xóa không thành công!");
+            } else {
+                bookService.deleteById(id);
+            }
         }
         return "redirect:/book";
     }

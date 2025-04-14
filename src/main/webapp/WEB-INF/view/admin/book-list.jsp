@@ -47,6 +47,12 @@
                         </div>
                     </form>
 
+                    <c:if test="${not empty sessionScope.bookDeleteError}">
+                        <div class="alert alert-danger text-center">
+                            ${sessionScope.bookDeleteError}
+                        </div>
+                        <c:remove var="bookDeleteError" scope="session" />
+                    </c:if>
 
                     <div class="text-end mb-3">
                         <a href="${pageContext.request.contextPath}/book/create" class="btn btn-success">

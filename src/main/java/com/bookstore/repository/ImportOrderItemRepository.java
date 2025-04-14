@@ -12,4 +12,7 @@ public interface ImportOrderItemRepository extends JpaRepositoryImplementation<I
 
     List<ImportOrderItem> findByImportOrder(ImportOrder importOrder);
 
+    // ImportOrderItemRepository.java
+    boolean existsByBook_Id(Long bookId);
+
 }

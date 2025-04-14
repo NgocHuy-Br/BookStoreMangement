@@ -3,6 +3,8 @@ package com.bookstore.service;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.Bookstore;
 import com.bookstore.repository.BookRepository;
+import com.bookstore.repository.ImportOrderItemRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.stream.Collectors;
 public class BookService {
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private ImportOrderItemRepository importOrderItemRepository;
 
     public List<Book> getBooksByBookstore(Bookstore bookstore) {
         return bookRepository.findByBookstore(bookstore);
@@ -42,6 +46,10 @@ public class BookService {
 
     public void save(Book book) {
         bookRepository.save(book);
+    }
+
+    public boolean isBookUsedInImportOrder(Long bookId) {
+        return importOrderItemRepository.existsByBook_Id(bookId);
     }
 
     public void deleteById(Long id) {

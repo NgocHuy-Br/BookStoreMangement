@@ -16,6 +16,9 @@
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-12">
                                 <h3 class="text-center mb-4">Chỉnh sửa sách</h3>
+
+
+
                                 <form:form method="post" modelAttribute="book">
                                     <form:hidden path="id" />
 
@@ -48,7 +51,7 @@
                                     <div class="mb-3">
                                         <label class="form-label">Tồn kho:</label>
                                         <form:input path="quantity" type="number" class="form-control"
-                                            required="required" />
+                                            readonly="true" />
                                     </div>
                                     <!-- <div class="mb-3">
                                         <label class="form-label">Danh mục:</label>
