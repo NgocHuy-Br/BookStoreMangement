@@ -56,7 +56,7 @@
         📈 Thống kê
       </a>
 
-      <a href="/admin/customer" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/customer" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
               <c:if test='${activeTab eq " customer"}'>background-color: #dee2e6; font-weight: bold; border-radius:
         4px;</c:if>'">
         💳 Chăm sóc khách hàng
