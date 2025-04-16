@@ -15,54 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-// @Controller
-// @RequestMapping("/customer")
-// public class CustomerController {
-
-//     @Autowired
-//     private CustomerService customerSettingService;
-
-//     // @GetMapping
-//     // public String showSettingForm(HttpSession session, Model model) {
-//     // User user = (User) session.getAttribute("loggedInUser");
-//     // Bookstore bookstore = user.getBookstore();
-
-//     // CustomerSetting setting = customerSettingService.getByBookstore(bookstore);
-//     // if (setting == null) {
-//     // setting = new CustomerSetting();
-//     // setting.setBookstore(bookstore);
-//     // }
-
-//     // model.addAttribute("setting", setting);
-//     // return "customer/customer-list";
-//     // }
-
-//     @GetMapping("")
-//     public String showCustomerSettingPage(Model model, HttpSession session) {
-//         User currentUser = (User) session.getAttribute("loggedInUser");
-//         Bookstore bookstore = currentUser.getBookstore();
-
-//         // Tìm setting theo bookstore
-//         CustomerSetting setting = customerSettingService.findByBookstore(bookstore);
-
-//         if (setting == null) {
-//             setting = new CustomerSetting();
-//             setting.setBookstore(bookstore); // Gán để khi lưu không bị lỗi
-//         }
-
-//         model.addAttribute("customerSetting", setting);
-//         model.addAttribute("customers", customerService.findByBookstore(bookstore));
-
-//         return "customer/customer-list"; // hoặc "admin/customer" nếu bạn đặt vậy
-//     }
-
-//     @PostMapping
-//     public String saveSetting(@ModelAttribute("setting") CustomerSetting setting) {
-//         customerSettingService.save(setting);
-//         return "redirect:/customer-list?success";
-//     }
-// }
-
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
@@ -87,11 +39,73 @@ public class CustomerController {
         return "customer/customer-list";
     }
 
-    @PostMapping("/setting/save")
-    public String updateSetting(@ModelAttribute("customerSetting") CustomerSetting setting, HttpSession session) {
-        customerService.updateSetting(setting);
-        session.setAttribute("customerMessage", "Cập nhật cấu hình thành công.");
+    @GetMapping("/create")
+    public String showCreateCustomerForm(Model model) {
+        model.addAttribute("customer", new Customer());
+        return "customer/customer-create";
+    }
+
+    @PostMapping("/create")
+    public String createCustomer(@ModelAttribute Customer customer, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        customer.setBookstore(currentUser.getBookstore());
+        customerService.save(customer);
+        session.setAttribute("customerMessage", "Thêm khách hàng thành công.");
         return "redirect:/customer";
+    }
+
+    // @PostMapping("/setting/save")
+    // public String updateSetting(@ModelAttribute("customerSetting")
+    // CustomerSetting setting, HttpSession session) {
+    // customerService.updateSetting(setting);
+    // session.setAttribute("customerMessage", "Cập nhật cấu hình thành công.");
+    // return "redirect:/customer";
+    // }
+    // @PostMapping("/setting/save")
+    // public String updateSetting(@ModelAttribute("customerSetting")
+    // CustomerSetting setting,
+    // Model model,
+    // HttpSession session) {
+    // // Lưu cấu hình mới
+    // customerService.updateSetting(setting);
+    // // session.setAttribute("customerMessage", "Cập nhật cấu hình thành công.");
+    // model.addAttribute("message", "Cập nhật cấu hình thành công.");
+
+    // // Lấy lại bookstore và customer list để render lại cùng lúc
+    // User currentUser = (User) session.getAttribute("loggedInUser");
+    // Bookstore bookstore = currentUser.getBookstore();
+    // List<Customer> customers =
+    // customerService.getCustomersByBookstore(bookstore);
+
+    // model.addAttribute("customerSetting", setting);
+    // model.addAttribute("customers", customers);
+    // model.addAttribute("keyword", ""); // reset keyword tìm kiếm nếu có
+
+    // return "customer/customer-list";
+    // }
+    @PostMapping("/setting/save")
+    public String updateSetting(@ModelAttribute("customerSetting") CustomerSetting setting,
+            Model model,
+            HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        Bookstore bookstore = currentUser.getBookstore();
+
+        // ✅ Tìm lại cấu hình hiện có để lấy ID cũ
+        CustomerSetting existingSetting = customerService.getOrCreateSetting(bookstore);
+        setting.setId(existingSetting.getId());
+        setting.setBookstore(bookstore); // ✅ phải gán lại vì form không gửi bookstore
+
+        // Lưu
+        customerService.updateSetting(setting);
+
+        model.addAttribute("message", "Cập nhật cấu hình thành công.");
+        List<Customer> customers = customerService.getCustomersByBookstore(bookstore);
+
+        model.addAttribute("customerSetting", setting);
+        model.addAttribute("customers", customers);
+        model.addAttribute("keyword", "");
+
+        return "customer/customer-list";
     }
 
     @GetMapping("/delete/{id}")
@@ -105,4 +119,24 @@ public class CustomerController {
         }
         return "redirect:/customer";
     }
+
+    @GetMapping("/update/{id}")
+    public String showEditCustomerForm(@PathVariable Long id, Model model) {
+        Customer customer = customerService.getCustomerById(id);
+        if (customer == null) {
+            return "redirect:/customer";
+        }
+        model.addAttribute("customer", customer);
+        return "customer/customer-edit";
+    }
+
+    @PostMapping("/update")
+    public String updateCustomer(@ModelAttribute("customer") Customer customer, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        customer.setBookstore(currentUser.getBookstore()); // bảo toàn liên kết với bookstore
+        customerService.save(customer);
+        session.setAttribute("customerMessage", "Cập nhật khách hàng thành công.");
+        return "redirect:/customer";
+    }
+
 }

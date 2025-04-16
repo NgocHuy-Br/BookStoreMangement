@@ -42,6 +42,11 @@ public class CustomerService {
     // return invoiceRepo.findByCustomer(customer).isEmpty();
     // }
 
+    public boolean canDeleteCustomer(Customer customer) {
+        // Nếu Customer chưa có hóa đơn nào => được xóa
+        return customer.getInvoices() == null || customer.getInvoices().isEmpty();
+    }
+
     public void deleteCustomer(Customer customer) {
         customerRepo.delete(customer);
     }
@@ -52,6 +57,10 @@ public class CustomerService {
 
     public List<Customer> searchByName(Bookstore bookstore, String keyword) {
         return customerRepo.findByBookstoreAndNameContainingIgnoreCase(bookstore, keyword);
+    }
+
+    public void save(Customer customer) {
+        customerRepo.save(customer);
     }
 
 }

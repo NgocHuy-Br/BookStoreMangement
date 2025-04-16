@@ -1,5 +1,8 @@
 package com.bookstore.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +18,17 @@ public class Customer {
 
     @ManyToOne
     private Bookstore bookstore;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Invoice> invoices = new ArrayList<>();
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
 
     // Getters and Setters
     public Long getId() {

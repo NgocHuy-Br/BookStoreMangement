@@ -41,21 +41,28 @@
                             <div class="alert alert-info text-center">${message}</div>
                         </c:if>
 
-                        <!-- Form cập nhật CustomerSetting -->
-                        <form:form method="post" modelAttribute="customerSetting" action="/customer/setting/save">
-                            <div class="mb-3">
-                                <label class="form-label">Phần trăm giảm giá cho thành viên (%):</label>
-                                <form:input path="discountRate" class="form-control" type="number" step="0.1"
-                                    required="required" />
+                        <!-- FORM CẬP NHẬT CustomerSetting - ĐÃ THÊM BỌC GỌN LẠI -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-3 col-12">
+                                <form:form method="post" modelAttribute="customerSetting"
+                                    action="/customer/setting/save">
+                                    <form:hidden path="id" />
+                                    <div class="mb-3">
+                                        <label class="form-label">Phần trăm giảm giá cho thành viên (%):</label>
+                                        <form:input path="discountRate" class="form-control" type="number" step="0.1"
+                                            required="required" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Số điểm cần thiết để trở thành thành viên:</label>
+                                        <form:input path="requiredPointsForMembership" class="form-control"
+                                            type="number" required="required" />
+                                    </div>
+                                    <button type="submit" class="btn btn-success">💾 Lưu</button>
+                                </form:form>
+
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Số điểm cần thiết để trở thành thành
-                                    viên:</label>
-                                <form:input path="requiredPointsForMembership" class="form-control" type="number"
-                                    required="required" />
-                            </div>
-                            <button type="submit" class="btn btn-success">💾 Lưu</button>
-                        </form:form>
+                        </div>
+
 
                         <!-- Gạch phân cách -->
                         <div class="divider"></div>
@@ -118,6 +125,11 @@
                                             </c:choose>
                                         </td>
                                         <td>
+
+                                            <a href="/customer/update/${customer.id}" class="btn btn-warning btn-sm">
+                                                ✏️Sửa
+                                            </a>
+
                                             <a href="/customer/delete/${customer.id}" class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Bạn có chắc muốn xóa khách hàng này?')">
                                                 Xóa
