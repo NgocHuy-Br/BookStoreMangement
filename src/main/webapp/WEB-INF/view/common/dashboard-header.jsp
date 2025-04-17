@@ -44,7 +44,7 @@
         🛳️ Nhập hàng
       </a>
 
-      <a href="/admin/invoice" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/invoice" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
               <c:if test='${activeTab eq " invoice"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
         🧾 Hóa đơn bán hàng

@@ -35,7 +35,7 @@ public class CustomerController {
 
         model.addAttribute("customerSetting", setting);
         model.addAttribute("customers", customers);
-        model.addAttribute("keyword", keyword); // ✅ truyền keyword để giữ lại ô tìm kiếm
+        model.addAttribute("keyword", keyword); // truyền keyword để giữ lại ô tìm kiếm
         return "customer/customer-list";
     }
 
@@ -54,35 +54,6 @@ public class CustomerController {
         return "redirect:/customer";
     }
 
-    // @PostMapping("/setting/save")
-    // public String updateSetting(@ModelAttribute("customerSetting")
-    // CustomerSetting setting, HttpSession session) {
-    // customerService.updateSetting(setting);
-    // session.setAttribute("customerMessage", "Cập nhật cấu hình thành công.");
-    // return "redirect:/customer";
-    // }
-    // @PostMapping("/setting/save")
-    // public String updateSetting(@ModelAttribute("customerSetting")
-    // CustomerSetting setting,
-    // Model model,
-    // HttpSession session) {
-    // // Lưu cấu hình mới
-    // customerService.updateSetting(setting);
-    // // session.setAttribute("customerMessage", "Cập nhật cấu hình thành công.");
-    // model.addAttribute("message", "Cập nhật cấu hình thành công.");
-
-    // // Lấy lại bookstore và customer list để render lại cùng lúc
-    // User currentUser = (User) session.getAttribute("loggedInUser");
-    // Bookstore bookstore = currentUser.getBookstore();
-    // List<Customer> customers =
-    // customerService.getCustomersByBookstore(bookstore);
-
-    // model.addAttribute("customerSetting", setting);
-    // model.addAttribute("customers", customers);
-    // model.addAttribute("keyword", ""); // reset keyword tìm kiếm nếu có
-
-    // return "customer/customer-list";
-    // }
     @PostMapping("/setting/save")
     public String updateSetting(@ModelAttribute("customerSetting") CustomerSetting setting,
             Model model,
@@ -90,7 +61,7 @@ public class CustomerController {
         User currentUser = (User) session.getAttribute("loggedInUser");
         Bookstore bookstore = currentUser.getBookstore();
 
-        // ✅ Tìm lại cấu hình hiện có để lấy ID cũ
+        // Tìm lại cấu hình hiện có để lấy ID cũ
         CustomerSetting existingSetting = customerService.getOrCreateSetting(bookstore);
         setting.setId(existingSetting.getId());
         setting.setBookstore(bookstore); // ✅ phải gán lại vì form không gửi bookstore
