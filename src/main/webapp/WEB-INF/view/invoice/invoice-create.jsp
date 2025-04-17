@@ -1,8 +1,7 @@
-<%@ include file="/WEB-INF/view/common/dashboard-header.jsp" %>
-    <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ include file="/WEB-INF/view/common/dashboard-header.jsp" %>
 
-            <!DOCTYPE html>
             <html>
 
             <head>
@@ -16,7 +15,7 @@
                     }
 
                     .book-column {
-                        width: 280px;
+                        width: 300px;
                     }
 
                     .price-column {
@@ -25,6 +24,15 @@
 
                     .qty-column {
                         width: 100px;
+                    }
+
+                    .stt-column {
+                        width: 50px;
+                    }
+
+                    .select-customer {
+                        width: 350px;
+                        margin: auto;
                     }
                 </style>
             </head>
@@ -37,15 +45,15 @@
                         <div class="alert alert-success text-center">${success}</div>
                     </c:if>
 
+                    <!-- Chọn khách hàng -->
                     <form method="post" action="/invoice/save">
-                        <!-- Chọn khách hàng -->
-                        <div class="mb-3 row">
+                        <div class="row mb-3 justify-content-center">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Chọn khách hàng:</label>
-                            <div class="col-sm-6">
-                                <select name="customerId" class="form-select" required>
+                            <div class="col-sm-4">
+                                <select name="customerId" class="form-select select-customer" required>
                                     <option value="">-- Chọn --</option>
-                                    <c:forEach var="c" items="${customers}">
-                                        <option value="${c.id}">${c.name}</option>
+                                    <c:forEach var="cus" items="${customers}">
+                                        <option value="${cus.id}">${cus.name} - ${cus.phone}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -53,10 +61,11 @@
 
                         <hr>
 
+                        <!-- Bảng danh sách sách bán -->
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th>STT</th>
+                                    <th class="stt-column">STT</th>
                                     <th class="book-column">Tên sách</th>
                                     <th>Tác giả</th>
                                     <th>Thể loại</th>
@@ -74,7 +83,7 @@
                                             <option value="">-- Chọn sách --</option>
                                             <c:forEach var="book" items="${books}">
                                                 <option value="${book.id}" data-author="${book.author}"
-                                                    data-category="${book.category.name}">
+                                                    data-category="${book.category.name}" data-price="${book.price}">
                                                     ${book.title}
                                                 </option>
                                             </c:forEach>
@@ -82,8 +91,7 @@
                                     </td>
                                     <td class="author">-</td>
                                     <td class="category">-</td>
-                                    <td><input type="number" name="unitPrice" step="1000" class="form-control price"
-                                            required onchange="calculateTotal()"></td>
+                                    <td><input type="number" name="unitPrice" class="form-control price" readonly></td>
                                     <td><input type="number" name="quantity" class="form-control quantity" required
                                             onchange="calculateTotal()"></td>
                                     <td><button type="button" class="btn btn-danger"
@@ -92,7 +100,7 @@
                             </tbody>
                         </table>
 
-                        <!-- Tổng cộng và VAT -->
+                        <!-- Tổng cộng, VAT -->
                         <div class="row mb-2">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Tổng cộng:</label>
                             <div class="col-sm-4">
@@ -113,7 +121,7 @@
                             </div>
                         </div>
 
-                        <!-- Nút -->
+                        <!-- Nút thêm -->
                         <div class="mb-3">
                             <button type="button" class="btn btn-outline-primary" onclick="addRow()">➕ Thêm
                                 dòng</button>
@@ -121,12 +129,13 @@
                                 cuối</button>
                         </div>
 
+                        <!-- Nút tạo -->
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-success">✔ Tạo hóa đơn</button>
                             <c:if test="${not empty lastInvoiceId}">
                                 <a href="/invoice/pdf/${lastInvoiceId}" class="btn btn-outline-dark ms-2">⬇ Xuất PDF</a>
                             </c:if>
-                            <a href="/invoice" class="btn btn-secondary me-2">Hủy</a>
+                            <a href="/invoice" class="btn btn-secondary ms-2">Hủy</a>
                         </div>
                     </form>
                 </div>
@@ -136,8 +145,11 @@
                         const row = select.closest('tr');
                         const author = select.options[select.selectedIndex].dataset.author || '-';
                         const category = select.options[select.selectedIndex].dataset.category || '-';
+                        const price = select.options[select.selectedIndex].dataset.price || '0';
                         row.querySelector('.author').innerText = author;
                         row.querySelector('.category').innerText = category;
+                        row.querySelector('.price').value = price;
+                        calculateTotal();
                     }
 
                     function addRow() {
@@ -182,6 +194,7 @@
                             total += price * quantity;
                         });
                         document.getElementById("totalAmount").value = total.toFixed(0);
+
                         const vatPercent = parseFloat(document.getElementById("vatPercent").value) || 0;
                         const vatAmount = total * vatPercent / 100;
                         document.getElementById("grandTotal").value = (total + vatAmount).toFixed(0);

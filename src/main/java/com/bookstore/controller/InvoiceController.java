@@ -14,43 +14,46 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/invoice")
 public class InvoiceController {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookRepository bookRepo;
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerRepository customerRepo;
+    @Autowired
+    private CategoryRepository categoryRepo;
+    @Autowired
+    private InvoiceRepository invoiceRepo;
+    @Autowired
+    private InvoiceItemRepository invoiceItemRepo;
+    @Autowired
+    private CustomerSettingRepository settingRepo;
     @Autowired
     private InvoiceService invoiceService;
-    @Autowired
-    private InvoiceRepository invoiceRepository;
-    @Autowired
-    private InvoiceItemRepository invoiceItemRepository;
 
-    @GetMapping("")
+    @GetMapping
     public String showInvoiceForm(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         Bookstore bookstore = user.getBookstore();
-        List<Book> books = bookRepository.findByBookstore(bookstore);
-        List<Customer> customers = customerRepository.findByBookstore(bookstore);
 
-        model.addAttribute("books", books);
-        model.addAttribute("customers", customers);
+        model.addAttribute("books", bookRepo.findByBookstore(bookstore));
+        model.addAttribute("customers", customerRepo.findByBookstore(bookstore));
+        model.addAttribute("categories", categoryRepo.findByBookstore(bookstore));
         return "invoice/invoice-create";
     }
 
     @PostMapping("/save")
-    public String saveInvoice(HttpServletRequest request, HttpSession session, RedirectAttributes redirectAttributes) {
-        User user = (User) session.getAttribute("loggedInUser");
+    public String saveInvoice(HttpServletRequest request, HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
         Long customerId = Long.parseLong(request.getParameter("customerId"));
-        Customer customer = customerRepository.findById(customerId).orElse(null);
 
         String[] bookIds = request.getParameterValues("bookId");
         String[] unitPrices = request.getParameterValues("unitPrice");
@@ -62,45 +65,41 @@ public class InvoiceController {
         List<Integer> quantityList = new ArrayList<>();
 
         for (int i = 0; i < bookIds.length; i++) {
-            if (!bookIds[i].isEmpty()) {
-                bookIdList.add(Long.parseLong(bookIds[i]));
-                priceList.add(Double.parseDouble(unitPrices[i]));
-                quantityList.add(Integer.parseInt(quantities[i]));
-            }
+            bookIdList.add(Long.parseLong(bookIds[i]));
+            priceList.add(Double.parseDouble(unitPrices[i]));
+            quantityList.add(Integer.parseInt(quantities[i]));
         }
 
-        Invoice invoice = invoiceService.createInvoice(user, customer, bookIdList, quantityList, priceList);
-        session.setAttribute("vatForInvoice_" + invoice.getId(), vat);
+        Invoice invoice = invoiceService.createInvoice(currentUser, customerId, bookIdList, quantityList, priceList,
+                vat);
+        session.setAttribute("vat_invoice_" + invoice.getId(), vat);
+
         redirectAttributes.addFlashAttribute("success", "Tạo hóa đơn thành công!");
         redirectAttributes.addFlashAttribute("lastInvoiceId", invoice.getId());
-
         return "redirect:/invoice";
     }
 
     @GetMapping("/pdf/{id}")
-    public void exportInvoiceToPDF(@PathVariable Long id, HttpServletResponse response, HttpSession session) {
-        Invoice invoice = invoiceRepository.findById(id).orElse(null);
+    public void exportInvoiceToPDF(@PathVariable Long id, HttpSession session, HttpServletResponse response) {
+        Invoice invoice = invoiceRepo.findById(id).orElse(null);
         if (invoice == null)
             return;
 
-        List<InvoiceItem> items = invoiceItemRepository.findByInvoice(invoice);
+        List<InvoiceItem> items = invoiceItemRepo.findByInvoice(invoice);
+        Object vatObj = session.getAttribute("vat_invoice_" + id);
         double vat = 0.0;
-        Object vatObj = session.getAttribute("vatForInvoice_" + id);
-        if (vatObj != null)
+        if (vatObj != null) {
             vat = (double) vatObj;
+        }
 
         byte[] pdfBytes = invoiceService.exportInvoiceToPDF(invoice, items, vat);
-        if (pdfBytes == null)
-            return;
-
         try {
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "inline; filename=invoice_" + id + ".pdf");
-            response.setContentLength(pdfBytes.length);
             OutputStream os = response.getOutputStream();
             os.write(pdfBytes);
             os.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

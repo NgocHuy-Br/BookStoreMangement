@@ -39,31 +39,39 @@ public class InvoiceService {
     private InvoiceItemRepository invoiceItemRepo;
     @Autowired
     private BookRepository bookRepo;
+    @Autowired
+    private CustomerRepository customerRepo;
 
-    public Invoice createInvoice(User user, Customer customer,
-            List<Long> bookIds,
-            List<Integer> quantities,
-            List<Double> prices) {
-
+    public Invoice createInvoice(User user, Long customerId,
+            List<Long> bookIds, List<Integer> quantities, List<Double> prices,
+            double vat) {
         Invoice invoice = new Invoice();
-        invoice.setCreatedAt(LocalDateTime.now());
         invoice.setBookstore(user.getBookstore());
+        invoice.setCreatedAt(LocalDateTime.now());
         invoice.setUser(user);
-        invoice.setCustomer(customer);
+        invoice.setCustomer(customerRepo.findById(customerId).orElse(null));
         invoiceRepo.save(invoice);
 
+        double total = 0;
         for (int i = 0; i < bookIds.size(); i++) {
             Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
             InvoiceItem item = new InvoiceItem();
-            item.setInvoice(invoice);
             item.setBook(book);
+            item.setInvoice(invoice);
             item.setQuantity(quantities.get(i));
             item.setUnitPrice(prices.get(i));
             invoiceItemRepo.save(item);
 
-            book.setQuantity(book.getQuantity() - quantities.get(i));
-            bookRepo.save(book);
+            total += quantities.get(i) * prices.get(i);
         }
+
+        // Tính điểm tích lũy sau VAT và cập nhật
+        double totalAfterVAT = total + total * vat / 100;
+        int loyaltyPoints = (int) Math.round(totalAfterVAT / 1000.0);
+
+        Customer customer = invoice.getCustomer();
+        customer.setLoyaltyPoints(customer.getLoyaltyPoints() + loyaltyPoints);
+        customerRepo.save(customer);
 
         return invoice;
     }
@@ -77,27 +85,23 @@ public class InvoiceService {
                     PdfEncodings.IDENTITY_H);
             doc.setFont(font);
 
-            Bookstore bookstore = invoice.getBookstore();
             doc.add(new Paragraph("HÓA ĐƠN BÁN HÀNG").setBold().setFontSize(18).setTextAlignment(TextAlignment.CENTER));
-            doc.add(new Paragraph("Nhà sách: " + bookstore.getName()).setBold());
-            doc.add(new Paragraph("Địa chỉ: " + bookstore.getAddress()));
-
-            doc.add(new Paragraph("\nMã hóa đơn: " + invoice.getId()));
-            doc.add(new Paragraph("Ngày: " + invoice.getCreatedAt()));
+            doc.add(new Paragraph("Ngày lập: " + invoice.getCreatedAt()));
             doc.add(new Paragraph("Khách hàng: " + invoice.getCustomer().getName()));
+            doc.add(new Paragraph(" "));
 
-            float[] columnWidths = { 5f, 30f, 15f, 20f, 15f, 15f };
-            Table table = new Table(UnitValue.createPercentArray(columnWidths)).useAllAvailableWidth();
+            Table table = new Table(UnitValue.createPercentArray(new float[] { 5, 30, 15, 15, 15, 15 }))
+                    .useAllAvailableWidth();
 
             table.addHeaderCell("STT");
             table.addHeaderCell("Tên sách");
             table.addHeaderCell("Tác giả");
-            table.addHeaderCell("Danh mục");
+            table.addHeaderCell("Thể loại");
             table.addHeaderCell("Giá bán");
             table.addHeaderCell("Số lượng");
 
-            int index = 1;
             double total = 0;
+            int index = 1;
             for (InvoiceItem item : items) {
                 table.addCell(String.valueOf(index++));
                 table.addCell(item.getBook().getTitle());
@@ -109,11 +113,11 @@ public class InvoiceService {
             }
 
             doc.add(table);
-            double vatAmount = total * vatRate / 100;
-            double grandTotal = total + vatAmount;
-            doc.add(new Paragraph("Tổng tiền: " + String.format("%,.0f", total) + " VND").setBold());
-            doc.add(new Paragraph("Thuế VAT: " + vatRate + "%").setBold());
-            doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grandTotal) + " VND").setBold());
+            double vat = total * vatRate / 100;
+            double grandTotal = total + vat;
+            doc.add(new Paragraph("\nTổng cộng: " + String.format("%,.0f", total) + " VND"));
+            doc.add(new Paragraph("Thuế VAT: " + vatRate + "%"));
+            doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grandTotal) + " VND"));
 
             doc.close();
             return baos.toByteArray();
@@ -123,3 +127,113 @@ public class InvoiceService {
         }
     }
 }
+
+// @Service
+// public class InvoiceService {
+
+// @Autowired
+// private InvoiceRepository invoiceRepo;
+// @Autowired
+// private InvoiceItemRepository invoiceItemRepo;
+// @Autowired
+// private BookRepository bookRepo;
+
+// public Invoice createInvoice(User user, Customer customer,
+// List<Long> bookIds,
+// List<Integer> quantities,
+// List<Double> prices) {
+
+// Invoice invoice = new Invoice();
+// invoice.setCreatedAt(LocalDateTime.now());
+// invoice.setBookstore(user.getBookstore());
+// invoice.setUser(user);
+// invoice.setCustomer(customer);
+// invoiceRepo.save(invoice);
+
+// for (int i = 0; i < bookIds.size(); i++) {
+// Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
+// InvoiceItem item = new InvoiceItem();
+// item.setInvoice(invoice);
+// item.setBook(book);
+// item.setQuantity(quantities.get(i));
+// item.setUnitPrice(prices.get(i));
+// invoiceItemRepo.save(item);
+
+// book.setQuantity(book.getQuantity() - quantities.get(i));
+// bookRepo.save(book);
+// }
+
+// return invoice;
+// }
+
+// public byte[] exportInvoiceToPDF(Invoice invoice, List<InvoiceItem> items,
+// double vatRate) {
+// try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+// PdfWriter writer = new PdfWriter(baos);
+// PdfDocument pdf = new PdfDocument(writer);
+// Document doc = new Document(pdf);
+// PdfFont font =
+// PdfFontFactory.createFont("src/main/resources/static/fonts/ARIAL.ttf",
+// PdfEncodings.IDENTITY_H);
+// doc.setFont(font);
+
+// Bookstore bookstore = invoice.getBookstore();
+// doc.add(new Paragraph("Nhà sách: " + bookstore.getName()).setBold());
+// doc.add(new Paragraph("Địa chỉ: " + bookstore.getAddress()));
+
+// doc.add(new Paragraph("\nHÓA ĐƠN BÁN HÀNG").setBold().setFontSize(18)
+// .setTextAlignment(TextAlignment.CENTER));
+
+// doc.add(new Paragraph("\n\nMã hóa đơn: " + invoice.getId()));
+// doc.add(new Paragraph("Khách hàng: " + invoice.getCustomer().getName()));
+
+// doc.add(new Paragraph("\n"));
+
+// float[] columnWidths = { 7f, 30f, 15f, 20f, 15f, 13f };
+// Table table = new
+// Table(UnitValue.createPercentArray(columnWidths)).useAllAvailableWidth();
+
+// table.addHeaderCell("STT").setTextAlignment(TextAlignment.CENTER);
+// table.addHeaderCell("Tên sách");
+// table.addHeaderCell("Tác giả");
+// table.addHeaderCell("Danh mục");
+// table.addHeaderCell("Giá bán");
+// table.addHeaderCell("Số lượng");
+
+// int index = 1;
+// double total = 0;
+// for (InvoiceItem item : items) {
+// table.addCell(String.valueOf(index++));
+// table.addCell(item.getBook().getTitle());
+// table.addCell(item.getBook().getAuthor());
+// table.addCell(item.getBook().getCategory().getName());
+// table.addCell(String.format("%,.0f", item.getUnitPrice()));
+// table.addCell(String.valueOf(item.getQuantity()));
+// total += item.getQuantity() * item.getUnitPrice();
+// }
+
+// doc.add(table);
+// double vatAmount = total * vatRate / 100;
+// double grandTotal = total + vatAmount;
+
+// doc.add(new Paragraph("\n"));
+// doc.add(new Paragraph("Tổng tiền: " + String.format("%,.0f", total) + "
+// VNĐ").setBold());
+// doc.add(new Paragraph("Thuế VAT: " + vatRate + "%").setBold());
+// doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grandTotal) + "
+// VNĐ").setBold());
+
+// LocalDateTime created = invoice.getCreatedAt();
+// doc.add(new Paragraph("\n\nNgày " + created.getDayOfMonth()
+// + " Tháng " + created.getMonthValue()
+// + " Năm " + created.getYear()));
+// // doc.add(new Paragraph("Người lập: " + order.getCreatedBy().getId()));
+
+// doc.close();
+// return baos.toByteArray();
+// } catch (Exception e) {
+// e.printStackTrace();
+// return null;
+// }
+// }
+// }
