@@ -38,17 +38,36 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
+    // @GetMapping
+    // public String showInvoiceForm(Model model, HttpSession session) {
+    // User user = (User) session.getAttribute("loggedInUser");
+    // Bookstore bookstore = user.getBookstore();
+
+    // CustomerSetting setting =
+    // settingRepo.findByBookstore(bookstore).orElse(null);
+    // model.addAttribute("discountRate", setting != null ?
+    // setting.getDiscountRate() : 0.0);
+
+    // model.addAttribute("books", bookRepo.findByBookstore(bookstore));
+    // model.addAttribute("customers", customerRepo.findByBookstore(bookstore));
+    // model.addAttribute("categories", categoryRepo.findByBookstore(bookstore));
+    // return "invoice/invoice-create";
+    // }
     @GetMapping
     public String showInvoiceForm(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         Bookstore bookstore = user.getBookstore();
 
+        List<Customer> customers = customerRepo.findByBookstore(bookstore);
         CustomerSetting setting = settingRepo.findByBookstore(bookstore).orElse(null);
-        model.addAttribute("discountRate", setting != null ? setting.getDiscountRate() : 0.0);
+        int requiredPoints = (setting != null) ? setting.getRequiredPointsForMembership() : 0;
+        double discountRate = (setting != null) ? setting.getDiscountRate() : 0;
 
         model.addAttribute("books", bookRepo.findByBookstore(bookstore));
-        model.addAttribute("customers", customerRepo.findByBookstore(bookstore));
         model.addAttribute("categories", categoryRepo.findByBookstore(bookstore));
+        model.addAttribute("customers", customers);
+        model.addAttribute("discountRate", discountRate);
+        model.addAttribute("requiredPoints", requiredPoints);
         return "invoice/invoice-create";
     }
 

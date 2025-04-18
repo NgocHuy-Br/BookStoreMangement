@@ -49,10 +49,13 @@
                         <div class="row mb-3 justify-content-center">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Chọn khách hàng:</label>
                             <div class="col-sm-4">
-                                <select name="customerId" class="form-select select-customer" required>
+                                <select name="customerId" id="customerSelect" class="form-select select-customer"
+                                    required onchange="calculateTotal()">
                                     <option value="">-- Chọn --</option>
                                     <c:forEach var="cus" items="${customers}">
-                                        <option value="${cus.id}">${cus.name} - ${cus.phone}</option>
+                                        <option value="${cus.id}" data-points="${cus.loyaltyPoints}">
+                                            ${cus.name} - ${cus.phone}
+                                        </option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -99,7 +102,7 @@
                             </tbody>
                         </table>
 
-                        <!-- Tính tổng -->
+                        <!-- Tổng cộng -->
                         <div class="row mb-2">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Tổng cộng:</label>
                             <div class="col-sm-4">
@@ -129,8 +132,9 @@
                             </div>
                         </div>
 
-                        <!-- Hidden để truyền discountRate từ server -->
+                        <!-- Hidden -->
                         <input type="hidden" id="discountRate" value="${discountRate}" />
+                        <input type="hidden" id="requiredPoints" value="${requiredPoints}" />
 
                         <!-- Nút -->
                         <div class="mb-3">
@@ -153,12 +157,10 @@
                 <script>
                     function updateDetails(select) {
                         const row = select.closest('tr');
-                        const author = select.options[select.selectedIndex].dataset.author || '-';
-                        const category = select.options[select.selectedIndex].dataset.category || '-';
-                        const price = select.options[select.selectedIndex].dataset.price || '0';
-                        row.querySelector('.author').innerText = author;
-                        row.querySelector('.category').innerText = category;
-                        row.querySelector('.price').value = price;
+                        const option = select.options[select.selectedIndex];
+                        row.querySelector('.author').innerText = option.dataset.author || '-';
+                        row.querySelector('.category').innerText = option.dataset.category || '-';
+                        row.querySelector('.price').value = option.dataset.price || '0';
                         calculateTotal();
                     }
 
@@ -203,16 +205,28 @@
                             const quantity = parseInt(row.querySelector("input[name='quantity']").value) || 0;
                             total += price * quantity;
                         });
+
                         document.getElementById("totalAmount").value = total.toFixed(0);
 
+                        const vat = parseFloat(document.getElementById("vatPercent").value) || 0;
                         const discountRate = parseFloat(document.getElementById("discountRate").value) || 0;
-                        const discountAmount = total * discountRate / 100;
-                        document.getElementById("discountAmount").value = discountAmount.toFixed(0);
+                        const requiredPoints = parseInt(document.getElementById("requiredPoints").value) || 0;
 
-                        const vatPercent = parseFloat(document.getElementById("vatPercent").value) || 0;
-                        const grandTotal = (total - discountAmount) * (1 + vatPercent / 100);
+                        const customerSelect = document.getElementById("customerSelect");
+                        const selectedOption = customerSelect.options[customerSelect.selectedIndex];
+                        const points = parseInt(selectedOption?.dataset?.points || "0");
+
+                        let discount = 0;
+                        if (points >= requiredPoints) {
+                            discount = total * discountRate / 100;
+                        }
+
+                        document.getElementById("discountAmount").value = discount.toFixed(0);
+                        const grandTotal = (total - discount) * (1 + vat / 100);
                         document.getElementById("grandTotal").value = grandTotal.toFixed(0);
                     }
+
+                    document.addEventListener("DOMContentLoaded", calculateTotal);
                 </script>
             </body>
 

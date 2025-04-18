@@ -69,6 +69,9 @@ public class InvoiceService {
         }
 
         double discountAmount = total * discountRate / 100;
+        invoice.setDiscountRate(discountRate);
+        invoice.setDiscountAmount(discountAmount);
+
         double totalAfterVAT = (total - discountAmount) * (1 + vat / 100);
 
         int loyaltyPoints = (int) Math.round(totalAfterVAT / 1000.0);
@@ -91,11 +94,15 @@ public class InvoiceService {
             Customer customer = invoice.getCustomer();
 
             // Lấy cài đặt giảm giá
-            CustomerSetting setting = settingRepo.findByBookstore(bookstore).orElse(null);
-            double discountRate = 0;
-            if (setting != null && customer.getLoyaltyPoints() >= setting.getRequiredPointsForMembership()) {
-                discountRate = setting.getDiscountRate();
-            }
+            // CustomerSetting setting =
+            // settingRepo.findByBookstore(bookstore).orElse(null);
+            // double discountRate = 0;
+            // if (setting != null && customer.getLoyaltyPoints() >=
+            // setting.getRequiredPointsForMembership()) {
+            // discountRate = setting.getDiscountRate();
+            // }
+            double discountRate = invoice.getDiscountRate();
+            double discountAmount = invoice.getDiscountAmount();
 
             // Header
             doc.add(new Paragraph("Nhà sách: " + bookstore.getName()).setBold().setTextAlignment(TextAlignment.CENTER));
@@ -132,7 +139,7 @@ public class InvoiceService {
 
             doc.add(table);
 
-            double discountAmount = total * discountRate / 100;
+            // double discountAmount = total * discountRate / 100;
             double vat = (total - discountAmount) * vatRate / 100;
             double grandTotal = (total - discountAmount) + vat;
 

@@ -16,6 +16,9 @@ public class Invoice {
 
     private LocalDateTime createdAt;
 
+    private double discountRate;
+    private double discountAmount;
+
     @ManyToOne
     private Customer customer;
 
@@ -40,6 +43,22 @@ public class Invoice {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public double getDiscountRate() {
+        return discountRate;
+    }
+
+    public double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountRate(double discountRate) {
+        this.discountRate = discountRate;
+    }
+
+    public void setDiscountAmount(double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public Customer getCustomer() {
