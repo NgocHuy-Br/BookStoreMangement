@@ -34,6 +34,54 @@ public class InvoiceService {
     @Autowired
     private CustomerSettingRepository settingRepo;
 
+    // public Invoice createInvoice(User user, Long customerId,
+    // List<Long> bookIds, List<Integer> quantities,
+    // List<Double> prices, double vat) {
+
+    // Invoice invoice = new Invoice();
+    // invoice.setBookstore(user.getBookstore());
+    // invoice.setCreatedAt(LocalDateTime.now());
+    // invoice.setUser(user);
+    // Customer customer = customerRepo.findById(customerId).orElse(null);
+    // invoice.setCustomer(customer);
+    // invoiceRepo.save(invoice);
+
+    // double total = 0;
+    // for (int i = 0; i < bookIds.size(); i++) {
+    // Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
+    // InvoiceItem item = new InvoiceItem();
+    // item.setBook(book);
+    // item.setInvoice(invoice);
+    // item.setQuantity(quantities.get(i));
+    // item.setUnitPrice(prices.get(i));
+    // invoiceItemRepo.save(item);
+
+    // total += prices.get(i) * quantities.get(i);
+    // }
+
+    // // Lấy thông tin cài đặt
+    // Bookstore bookstore = user.getBookstore();
+    // CustomerSetting setting =
+    // settingRepo.findByBookstore(bookstore).orElse(null);
+    // double discountRate = 0;
+
+    // if (setting != null && customer.getLoyaltyPoints() >=
+    // setting.getRequiredPointsForMembership()) {
+    // discountRate = setting.getDiscountRate();
+    // }
+
+    // double discountAmount = total * discountRate / 100;
+    // invoice.setDiscountRate(discountRate);
+    // invoice.setDiscountAmount(discountAmount);
+
+    // double totalAfterVAT = (total - discountAmount) * (1 + vat / 100);
+
+    // int loyaltyPoints = (int) Math.round(totalAfterVAT / 1000.0);
+    // customer.setLoyaltyPoints(customer.getLoyaltyPoints() + loyaltyPoints);
+    // customerRepo.save(customer);
+
+    // return invoice;
+    // }
     public Invoice createInvoice(User user, Long customerId,
             List<Long> bookIds, List<Integer> quantities,
             List<Double> prices, double vat) {
@@ -44,6 +92,16 @@ public class InvoiceService {
         invoice.setUser(user);
         Customer customer = customerRepo.findById(customerId).orElse(null);
         invoice.setCustomer(customer);
+
+        // Kiểm tra tồn kho trước
+        for (int i = 0; i < bookIds.size(); i++) {
+            Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
+            if (book == null || book.getInventory() == null || book.getInventory() < quantities.get(i)) {
+                throw new IllegalArgumentException("Số lượng bán vượt quá tồn kho cho sách: "
+                        + (book != null ? book.getTitle() : "Không xác định"));
+            }
+        }
+
         invoiceRepo.save(invoice);
 
         double total = 0;
@@ -57,9 +115,13 @@ public class InvoiceService {
             invoiceItemRepo.save(item);
 
             total += prices.get(i) * quantities.get(i);
+
+            // Trừ tồn kho
+            book.setInventory(book.getInventory() - quantities.get(i));
+            bookRepo.save(book);
         }
 
-        // Lấy thông tin cài đặt
+        // Áp dụng giảm giá
         Bookstore bookstore = user.getBookstore();
         CustomerSetting setting = settingRepo.findByBookstore(bookstore).orElse(null);
         double discountRate = 0;
@@ -73,7 +135,6 @@ public class InvoiceService {
         invoice.setDiscountAmount(discountAmount);
 
         double totalAfterVAT = (total - discountAmount) * (1 + vat / 100);
-
         int loyaltyPoints = (int) Math.round(totalAfterVAT / 1000.0);
         customer.setLoyaltyPoints(customer.getLoyaltyPoints() + loyaltyPoints);
         customerRepo.save(customer);

@@ -22,28 +22,18 @@ public class BookController {
     private BookService bookService;
 
     // @GetMapping("")
-    // public String listBooks(@RequestParam(required = false) String keyword, Model
-    // model, HttpSession session) {
-    // User user = (User) session.getAttribute("loggedInUser");
-    // Bookstore bookstore = user.getBookstore();
+    // public String listBooks(@RequestParam(required = false) String keyword,
+    // Model model,
+    // HttpSession session) {
+    // User currentUser = (User) session.getAttribute("loggedInUser");
+    // Bookstore bookstore = currentUser.getBookstore();
 
-    // List<Book> books = (keyword != null && !keyword.isEmpty()) ?
-    // bookService.searchBooks(bookstore, keyword)
-    // : bookService.getBooksByBookstore(bookstore);
-
-    // model.addAttribute("books", books);
-    // model.addAttribute("keyword", keyword);
-    // return "admin/book-list";
+    // List<Book> books;
+    // if (keyword != null && !keyword.isBlank()) {
+    // books = bookService.searchBooks(bookstore, keyword);
+    // } else {
+    // books = bookService.getBooksByBookstore(bookstore);
     // }
-    // @GetMapping("")
-    // public String listBooks(@RequestParam(required = false) String keyword, Model
-    // model, HttpSession session) {
-    // User user = (User) session.getAttribute("loggedInUser");
-    // Bookstore bookstore = user.getBookstore();
-
-    // List<Book> books = (keyword != null && !keyword.trim().isEmpty())
-    // ? bookService.searchBooks(bookstore, keyword)
-    // : bookService.getBooksByBookstore(bookstore);
 
     // model.addAttribute("books", books);
     // model.addAttribute("keyword", keyword);
@@ -51,20 +41,31 @@ public class BookController {
     // }
     @GetMapping("")
     public String listBooks(@RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer top,
             Model model,
             HttpSession session) {
         User currentUser = (User) session.getAttribute("loggedInUser");
         Bookstore bookstore = currentUser.getBookstore();
 
         List<Book> books;
-        if (keyword != null && !keyword.isBlank()) {
+
+        if (top != null && top > 0) {
+            books = bookService.findTopSellingBooks(bookstore, top);
+            model.addAttribute("top", top);
+        } else if (keyword != null && !keyword.isBlank()) {
             books = bookService.searchBooks(bookstore, keyword);
+            model.addAttribute("keyword", keyword);
         } else {
             books = bookService.getBooksByBookstore(bookstore);
         }
 
+        // Tính số lượng bán ra
+        for (Book book : books) {
+            int soldQty = bookService.getSoldQuantity(book);
+            book.setSoldQuantity(soldQty);
+        }
+
         model.addAttribute("books", books);
-        model.addAttribute("keyword", keyword);
         return "admin/book-list";
     }
 
@@ -79,7 +80,7 @@ public class BookController {
         }
 
         Book book = new Book();
-        book.setQuantity(0); // số lượng mặc định
+        book.setInventory(0); // số lượng mặc định
 
         // Lấy danh sách danh mục theo bookstore của admin đang đăng nhập
         List<Category> categories = categoryService.getCategoriesByBookstore(currentUser.getBookstore());
@@ -89,12 +90,6 @@ public class BookController {
         return "admin/book-create";
     }
 
-    // @GetMapping("/create")
-    // public String showCreateForm(Model model) {
-    // model.addAttribute("book", new Book());
-    // return "admin/book-create";
-    // }
-
     @PostMapping("create")
     public String createBook(@ModelAttribute("book") Book book, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
@@ -102,30 +97,6 @@ public class BookController {
         bookService.save(book);
         return "redirect:/book";
     }
-    // @GetMapping("/create")
-    // public String showCreateForm(Model model, HttpSession session) {
-    // User currentUser = (User) session.getAttribute("loggedInUser");
-    // if (currentUser == null)
-    // return "redirect:/auth/login";
-
-    // Book book = new Book();
-    // model.addAttribute("book", book);
-    // model.addAttribute("categories", categoryService.getAllCategories());
-    // return "admin/book-create";
-    // }
-
-    // @PostMapping("/create")
-    // public String createBook(@ModelAttribute("book") Book book, HttpSession
-    // session) {
-    // User currentUser = (User) session.getAttribute("loggedInUser");
-    // if (currentUser == null)
-    // return "redirect:/auth/login";
-
-    // book.setBookstore(currentUser.getBookstore()); // gắn nhà sách của người đang
-    // đăng nhập
-    // bookService.save(book);
-    // return "redirect:/admin/book";
-    // }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model, HttpSession session) {
@@ -134,7 +105,7 @@ public class BookController {
 
         model.addAttribute("book", book);
 
-        // ✅ Thêm danh sách category hiện có trong nhà sách
+        // Thêm danh sách category hiện có trong nhà sách
         List<Category> categories = categoryService.getCategoriesByBookstore(currentUser.getBookstore());
         model.addAttribute("categories", categories);
 
@@ -149,25 +120,6 @@ public class BookController {
         return "redirect:/book";
     }
 
-    // @GetMapping("/delete/{id}")
-    // public String deleteBook(@PathVariable Long id) {
-    // bookService.deleteById(id);
-    // return "redirect:/book";
-    // }
-    // @GetMapping("/delete/{id}")
-    // public String deleteBook(@PathVariable Long id, HttpSession session) {
-    // User currentUser = (User) session.getAttribute("loggedInUser");
-    // if (currentUser == null) {
-    // return "redirect:/auth/login";
-    // }
-
-    // Book book = bookService.getById(id);
-    // if (book != null &&
-    // book.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
-    // bookService.deleteById(id);
-    // }
-    // return "redirect:/book";
-    // }
     @GetMapping("/delete/{id}")
     public String deleteBook(@PathVariable Long id, HttpSession session, Model model) {
         User currentUser = (User) session.getAttribute("loggedInUser");
@@ -178,7 +130,7 @@ public class BookController {
         Book book = bookService.getById(id);
         if (book != null && book.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
             if (bookService.isBookUsedInImportOrder(id)) {
-                // ✅ Nếu đã tồn tại trong đơn hàng thì không xóa, gắn thông báo lỗi
+                // Nếu đã tồn tại trong đơn hàng thì không xóa, gắn thông báo lỗi
                 session.setAttribute("bookDeleteError", "Sách đã nằm trong đơn hàng. Xóa không thành công!");
             } else {
                 bookService.deleteById(id);

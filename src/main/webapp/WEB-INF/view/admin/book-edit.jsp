@@ -16,9 +16,6 @@
                         <div class="row justify-content-center">
                             <div class="col-md-6 col-12">
                                 <h3 class="text-center mb-4">Chỉnh sửa sách</h3>
-
-
-
                                 <form:form method="post" modelAttribute="book">
                                     <form:hidden path="id" />
 
@@ -50,22 +47,9 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Tồn kho:</label>
-                                        <form:input path="quantity" type="number" class="form-control"
+                                        <form:input path="inventory" type="number" class="form-control"
                                             readonly="true" />
                                     </div>
-                                    <!-- <div class="mb-3">
-                                        <label class="form-label">Danh mục:</label>
-                                        <div class="d-flex gap-2">
-                                            <a href="/category/create?returnUrl=/book/edit/${book.id}"
-                                                class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
-
-                                            <form:select path="category.id" class="form-select">
-                                                <form:options items="${categories}" itemValue="id" itemLabel="name" />
-                                            </form:select>
-                                        </div>
-                                    </div> -->
-
-
                                     <button type="submit" class="btn btn-success">Cập nhật</button>
                                     <a href="/book" class="btn btn-secondary">Hủy</a>
                                 </form:form>

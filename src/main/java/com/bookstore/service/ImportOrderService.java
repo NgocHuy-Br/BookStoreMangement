@@ -56,7 +56,7 @@ public class ImportOrderService {
                         item.setQuantity(quantities.get(i));
                         item.setUnitPrice(prices.get(i));
 
-                        book.setQuantity(book.getQuantity() + quantities.get(i));
+                        book.setInventory(book.getInventory() + quantities.get(i));
                         bookRepository.save(book);
 
                         importItemRepository.save(item);
@@ -82,7 +82,7 @@ public class ImportOrderService {
                         item.setQuantity(quantities.get(i));
                         item.setUnitPrice(prices.get(i));
 
-                        book.setQuantity(book.getQuantity() + quantities.get(i));
+                        book.setInventory(book.getInventory() + quantities.get(i));
                         bookRepository.save(book);
 
                         importItemRepository.save(item);

@@ -11,7 +11,18 @@ public class Book {
     private String title;
     private String author;
     private Double price;
-    private Integer quantity = 0;
+    private Integer inventory = 0;
+
+    @Transient
+    private int soldQuantity;
+
+    public int getSoldQuantity() {
+        return soldQuantity;
+    }
+
+    public void setSoldQuantity(int soldQuantity) {
+        this.soldQuantity = soldQuantity;
+    }
 
     @ManyToOne
     @JoinColumn(name = "bookstore_id")
@@ -53,12 +64,12 @@ public class Book {
         this.price = price;
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    public Integer getInventory() {
+        return inventory != null ? inventory : 0;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setInventory(Integer inventory) {
+        this.inventory = inventory;
     }
 
     public Bookstore getBookstore() {
@@ -79,6 +90,7 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book{id=" + id + ", title='" + title + "', author='" + author + "'}";
+        return "Book{id=" + id + ", title='" + title + "', inventory=" + inventory + "}";
     }
+
 }

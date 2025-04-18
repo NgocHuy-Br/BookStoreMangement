@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Tồn kho:</label>
-                                        <form:input path="quantity" type="number" class="form-control"
+                                        <form:input path="inventory" type="number" class="form-control"
                                             readonly="true" />
 
 

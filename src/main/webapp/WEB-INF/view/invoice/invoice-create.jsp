@@ -45,6 +45,11 @@
                         <div class="alert alert-success text-center">${success}</div>
                     </c:if>
 
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger text-center">${error}</div>
+                    </c:if>
+
+
                     <form method="post" action="/invoice/save">
                         <div class="row mb-3 justify-content-center">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Chọn khách hàng:</label>

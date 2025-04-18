@@ -38,21 +38,6 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
-    // @GetMapping
-    // public String showInvoiceForm(Model model, HttpSession session) {
-    // User user = (User) session.getAttribute("loggedInUser");
-    // Bookstore bookstore = user.getBookstore();
-
-    // CustomerSetting setting =
-    // settingRepo.findByBookstore(bookstore).orElse(null);
-    // model.addAttribute("discountRate", setting != null ?
-    // setting.getDiscountRate() : 0.0);
-
-    // model.addAttribute("books", bookRepo.findByBookstore(bookstore));
-    // model.addAttribute("customers", customerRepo.findByBookstore(bookstore));
-    // model.addAttribute("categories", categoryRepo.findByBookstore(bookstore));
-    // return "invoice/invoice-create";
-    // }
     @GetMapping
     public String showInvoiceForm(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
@@ -71,6 +56,36 @@ public class InvoiceController {
         return "invoice/invoice-create";
     }
 
+    // @PostMapping("/save")
+    // public String saveInvoice(HttpServletRequest request, HttpSession session,
+    // RedirectAttributes redirectAttributes) {
+    // User currentUser = (User) session.getAttribute("loggedInUser");
+    // Long customerId = Long.parseLong(request.getParameter("customerId"));
+
+    // String[] bookIds = request.getParameterValues("bookId");
+    // String[] unitPrices = request.getParameterValues("unitPrice");
+    // String[] quantities = request.getParameterValues("quantity");
+    // double vat = Double.parseDouble(request.getParameter("vat"));
+
+    // List<Long> bookIdList = new ArrayList<>();
+    // List<Double> priceList = new ArrayList<>();
+    // List<Integer> quantityList = new ArrayList<>();
+
+    // for (int i = 0; i < bookIds.length; i++) {
+    // bookIdList.add(Long.parseLong(bookIds[i]));
+    // priceList.add(Double.parseDouble(unitPrices[i]));
+    // quantityList.add(Integer.parseInt(quantities[i]));
+    // }
+
+    // Invoice invoice = invoiceService.createInvoice(currentUser, customerId,
+    // bookIdList, quantityList, priceList,
+    // vat);
+    // session.setAttribute("vat_invoice_" + invoice.getId(), vat);
+
+    // redirectAttributes.addFlashAttribute("success", "Tạo hóa đơn thành công!");
+    // redirectAttributes.addFlashAttribute("lastInvoiceId", invoice.getId());
+    // return "redirect:/invoice";
+    // }
     @PostMapping("/save")
     public String saveInvoice(HttpServletRequest request, HttpSession session,
             RedirectAttributes redirectAttributes) {
@@ -92,12 +107,16 @@ public class InvoiceController {
             quantityList.add(Integer.parseInt(quantities[i]));
         }
 
-        Invoice invoice = invoiceService.createInvoice(currentUser, customerId, bookIdList, quantityList, priceList,
-                vat);
-        session.setAttribute("vat_invoice_" + invoice.getId(), vat);
+        try {
+            Invoice invoice = invoiceService.createInvoice(currentUser, customerId, bookIdList, quantityList, priceList,
+                    vat);
+            session.setAttribute("vat_invoice_" + invoice.getId(), vat);
+            redirectAttributes.addFlashAttribute("success", "Tạo hóa đơn thành công!");
+            redirectAttributes.addFlashAttribute("lastInvoiceId", invoice.getId());
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
 
-        redirectAttributes.addFlashAttribute("success", "Tạo hóa đơn thành công!");
-        redirectAttributes.addFlashAttribute("lastInvoiceId", invoice.getId());
         return "redirect:/invoice";
     }
 
