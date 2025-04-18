@@ -32,31 +32,31 @@
         🎥 Quản lý nhân viên
       </a>
 
-      <a href="/book" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/book" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 20px; 
               <c:if test='${activeTab eq " book"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
         📚 Quản lý sách
       </a>
 
-      <a href="/import" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/import" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 20px; 
               <c:if test='${activeTab eq " import"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
         🛳️ Nhập hàng
       </a>
 
-      <a href="/invoice" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/invoice" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 20px; 
               <c:if test='${activeTab eq " invoice"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
         🧾 Hóa đơn bán hàng
       </a>
 
-      <a href="/admin/stats" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <!-- <a href="/admin/stats" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
               <c:if test='${activeTab eq " stats"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
         📈 Thống kê
-      </a>
+      </a> -->
 
-      <a href="/customer" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
+      <a href="/customer" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 20px; 
               <c:if test='${activeTab eq " customer"}'>background-color: #dee2e6; font-weight: bold; border-radius:
         4px;</c:if>'">
         💳 Chăm sóc khách hàng

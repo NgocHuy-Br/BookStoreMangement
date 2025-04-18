@@ -1,12 +1,15 @@
 package com.bookstore.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 
 @Entity
 public class ImportOrder {
@@ -15,6 +18,8 @@ public class ImportOrder {
     private Long id;
 
     private LocalDateTime createdAt;
+
+    private Double totalAmount = 0.0;
 
     @ManyToOne
     private Supplier supplier;
@@ -36,6 +41,10 @@ public class ImportOrder {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public Date getCreatedAtAsDate() {
+        return Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
@@ -64,6 +73,19 @@ public class ImportOrder {
 
     public void setBookstore(Bookstore bookstore) {
         this.bookstore = bookstore;
+    }
+
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    @Transient
+    public Double getTotal() {
+        return this.totalAmount;
     }
 
     @Override

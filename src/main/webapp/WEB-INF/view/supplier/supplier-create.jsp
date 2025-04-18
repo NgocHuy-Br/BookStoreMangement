@@ -8,7 +8,7 @@
                 <head>
                     <title>Thêm nhà cung cấp</title>
 
-                    
+
                     <link rel="stylesheet"
                         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
                 </head>
@@ -44,7 +44,7 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between">
-                                        <a href="${returnUrl}" class="btn btn-secondary">Hủy</a>
+                                        <a href="${returnUrl}" class="btn btn-secondary">Quay lại</a>
                                         <button type="submit" class="btn btn-success">Lưu</button>
                                     </div>
                                 </form:form>

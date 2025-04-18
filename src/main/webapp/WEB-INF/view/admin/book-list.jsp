@@ -40,8 +40,8 @@
                     <!-- Form Top bán chạy -->
                     <form method="get" class=" row mb-3" action="${pageContext.request.contextPath}/book">
                         <div class="text-center mb-4">
-                            <a href="${pageContext.request.contextPath}/book?top=2" class="btn btn-outline-primary">
-                                📈 Thống kê top 2 bán chạy
+                            <a href="${pageContext.request.contextPath}/book?top=10" class="btn btn-outline-primary">
+                                📈 Thống kê top 10 sách bán chạy
                             </a>
                         </div>
                     </form>

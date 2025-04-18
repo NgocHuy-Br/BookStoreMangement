@@ -2,175 +2,93 @@ package com.bookstore.service;
 
 import com.bookstore.entity.*;
 import com.bookstore.repository.*;
-
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.*;
-import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.UnitValue;
-import com.itextpdf.io.font.constants.StandardFonts;
-import com.itextpdf.io.font.PdfEncodings;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.font.PdfFont;
-
-import java.io.ByteArrayOutputStream;
+import com.bookstore.util.PdfExportUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 @Service
 public class ImportOrderService {
 
-        @Autowired
-        private ImportOrderRepository importOrderRepository;
-        @Autowired
-        private ImportOrderItemRepository importItemRepository;
-        @Autowired
-        private BookRepository bookRepository;
-        @Autowired
-        private SupplierRepository supplierRepository;
+    @Autowired
+    private ImportOrderRepository orderRepo;
+    @Autowired
+    private ImportOrderItemRepository itemRepo;
+    @Autowired
+    private SupplierRepository supplierRepo;
+    @Autowired
+    private BookRepository bookRepo;
 
-        public void createMultipleSupplierOrder(User user, List<Long> bookIds, List<Long> supplierIds,
-                        List<Integer> quantities, List<Double> prices) {
+    public List<ImportOrder> filterOrders(Bookstore bookstore, String supplierName, LocalDate from, LocalDate to) {
+        List<ImportOrder> allOrders = orderRepo.findAll()
+                .stream()
+                .filter(order -> order.getBookstore().getId().equals(bookstore.getId()))
+                .filter(order -> supplierName == null || supplierName.isBlank()
+                        || order.getSupplier().getName().toLowerCase().contains(supplierName.toLowerCase()))
+                .filter(order -> {
+                    LocalDate date = order.getCreatedAt().toLocalDate();
+                    return (from == null || !date.isBefore(from)) && (to == null || !date.isAfter(to));
+                })
+                .collect(Collectors.toList());
 
-                for (int i = 0; i < bookIds.size(); i++) {
-                        ImportOrder order = new ImportOrder();
-                        order.setCreatedAt(LocalDateTime.now());
-                        order.setCreatedBy(user);
-                        order.setBookstore(user.getBookstore());
+        // return allOrders;
+        return allOrders.stream()
+                .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+                .collect(Collectors.toList());
 
-                        Supplier supplier = supplierRepository.findById(supplierIds.get(i)).orElse(null);
-                        order.setSupplier(supplier);
+    }
 
-                        importOrderRepository.save(order);
+    public double calculateTotalWithVAT(List<ImportOrder> orders) {
+        double total = 0;
+        for (ImportOrder order : orders) {
+            List<ImportOrderItem> items = itemRepo.findByImportOrder(order);
+            double sum = items.stream()
+                    .mapToDouble(item -> item.getUnitPrice() * item.getQuantity())
+                    .sum();
 
-                        Book book = bookRepository.findById(bookIds.get(i)).orElse(null);
+            // Nếu muốn lấy VAT từ order sau này: có thể lưu vào order.getVatRate()
+            total += sum * 1.0; // tạm chưa cộng VAT vì chưa lưu theo đơn
+        }
+        return total;
+    }
 
-                        ImportOrderItem item = new ImportOrderItem();
-                        item.setImportOrder(order);
-                        item.setBook(book);
-                        item.setQuantity(quantities.get(i));
-                        item.setUnitPrice(prices.get(i));
+    public ImportOrder createImportOrder(User user, Long supplierId, List<Long> bookIds, List<Integer> qtys,
+            List<Double> prices) {
+        ImportOrder order = new ImportOrder();
+        order.setBookstore(user.getBookstore());
+        order.setCreatedBy(user);
+        order.setCreatedAt(java.time.LocalDateTime.now());
+        order.setSupplier(supplierRepo.findById(supplierId).orElse(null));
+        orderRepo.save(order);
 
-                        book.setInventory(book.getInventory() + quantities.get(i));
-                        bookRepository.save(book);
+        for (int i = 0; i < bookIds.size(); i++) {
+            Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
+            ImportOrderItem item = new ImportOrderItem();
+            item.setBook(book);
+            item.setImportOrder(order);
+            item.setQuantity(qtys.get(i));
+            item.setUnitPrice(prices.get(i));
+            itemRepo.save(item);
 
-                        importItemRepository.save(item);
-                }
+            // update tồn kho
+            book.setInventory(book.getInventory() + qtys.get(i));
+            bookRepo.save(book);
         }
 
-        public ImportOrder createImportOrder(User user, Long supplierId, List<Long> bookIds,
-                        List<Integer> quantities, List<Double> prices) {
+        return order;
+    }
 
-                ImportOrder order = new ImportOrder();
-                order.setCreatedAt(LocalDateTime.now());
-                order.setCreatedBy(user);
-                order.setBookstore(user.getBookstore());
+    public double sumTotalOfOrders(List<ImportOrder> orders) {
+        return orders.stream().mapToDouble(order -> itemRepo.findByImportOrder(order).stream()
+                .mapToDouble(i -> i.getQuantity() * i.getUnitPrice()).sum()).sum();
+    }
 
-                order.setSupplier(supplierRepository.findById(supplierId).orElse(null));
-                importOrderRepository.save(order);
-
-                for (int i = 0; i < bookIds.size(); i++) {
-                        ImportOrderItem item = new ImportOrderItem();
-                        Book book = bookRepository.findById(bookIds.get(i)).orElse(null);
-                        item.setBook(book);
-                        item.setImportOrder(order);
-                        item.setQuantity(quantities.get(i));
-                        item.setUnitPrice(prices.get(i));
-
-                        book.setInventory(book.getInventory() + quantities.get(i));
-                        bookRepository.save(book);
-
-                        importItemRepository.save(item);
-                }
-
-                return order;
-        }
-
-        public byte[] exportImportOrderToPDF(ImportOrder order, List<ImportOrderItem> items, double vatRate) {
-                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                        PdfWriter writer = new PdfWriter(baos);
-                        PdfDocument pdf = new PdfDocument(writer);
-                        Document doc = new Document(pdf);
-
-                        // Font hỗ trợ tiếng Việt
-                        PdfFont font = PdfFontFactory.createFont(
-                                        "src/main/resources/static/fonts/ARIAL.ttf", PdfEncodings.IDENTITY_H);
-                        doc.setFont(font);
-
-                        Bookstore bookstore = order.getBookstore();
-                        doc.add(new Paragraph("Nhà sách: " + bookstore.getName())
-                                        .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
-                        doc.add(new Paragraph("Địa chỉ: " + bookstore.getAddress())
-                                        .setItalic().setTextAlignment(TextAlignment.CENTER));
-
-                        doc.add(new Paragraph("\nPHIẾU NHẬP HÀNG")
-                                        .setBold().setFontSize(18).setTextAlignment(TextAlignment.CENTER));
-
-                        doc.add(new Paragraph("\nMã đơn: " + order.getId()));
-                        doc.add(new Paragraph("Nhà cung cấp hàng: " + order.getSupplier().getName()));
-
-                        doc.add(new Paragraph("\nCHI TIẾT ĐƠN HÀNG")
-                                        .setBold().setTextAlignment(TextAlignment.CENTER));
-
-                        // Thiết lập độ rộng cột theo tỷ lệ %
-                        float[] columnWidths = { 5f, 30f, 15f, 20f, 15f, 15f };
-                        Table table = new Table(UnitValue.createPercentArray(columnWidths)).useAllAvailableWidth();
-
-                        table.addHeaderCell(new Cell()
-                                        .add(new Paragraph("STT").setBold().setTextAlignment(TextAlignment.CENTER)));
-                        table.addHeaderCell(
-                                        new Cell().add(new Paragraph("Tên sách").setBold()
-                                                        .setTextAlignment(TextAlignment.CENTER)));
-                        table.addHeaderCell(
-                                        new Cell().add(new Paragraph("Tác giả").setBold()
-                                                        .setTextAlignment(TextAlignment.CENTER)));
-                        table.addHeaderCell(
-                                        new Cell().add(new Paragraph("Danh mục").setBold()
-                                                        .setTextAlignment(TextAlignment.CENTER)));
-                        table.addHeaderCell(
-                                        new Cell().add(new Paragraph("Đơn giá").setBold()
-                                                        .setTextAlignment(TextAlignment.CENTER)));
-                        table.addHeaderCell(
-                                        new Cell().add(new Paragraph("Số lượng").setBold()
-                                                        .setTextAlignment(TextAlignment.CENTER)));
-
-                        int index = 1;
-                        double total = 0;
-                        for (ImportOrderItem item : items) {
-                                table.addCell(String.valueOf(index++)).setTextAlignment(TextAlignment.CENTER);
-                                table.addCell(item.getBook().getTitle());
-                                table.addCell(item.getBook().getAuthor());
-                                table.addCell(item.getBook().getCategory().getName());
-                                table.addCell(String.format("%,.0f", item.getUnitPrice()));
-                                table.addCell(String.valueOf(item.getQuantity()));
-                                total += item.getQuantity() * item.getUnitPrice();
-                        }
-                        doc.add(table);
-
-                        double vatAmount = total * vatRate / 100;
-                        double grandTotal = total + vatAmount;
-
-                        doc.add(new Paragraph("\nTổng cộng: " + String.format("%,.0f", total) + " VND").setBold());
-                        doc.add(new Paragraph("Thuế VAT: " + vatRate + "%").setBold());
-                        doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grandTotal) + " VND").setBold());
-
-                        LocalDateTime created = order.getCreatedAt();
-                        doc.add(new Paragraph("\n\nNgày " + created.getDayOfMonth()
-                                        + " Tháng " + created.getMonthValue()
-                                        + " Năm " + created.getYear()));
-                        doc.add(new Paragraph("Người lập: " + order.getCreatedBy().getId()));
-
-                        doc.close();
-                        return baos.toByteArray();
-                } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                }
-        }
-
+    public byte[] exportImportOrderToPDF(ImportOrder order, List<ImportOrderItem> items, double vat) {
+        return PdfExportUtil.exportImportOrderPDF(order, items, vat);
+    }
 }
