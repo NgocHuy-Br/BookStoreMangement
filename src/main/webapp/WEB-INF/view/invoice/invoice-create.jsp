@@ -45,7 +45,6 @@
                         <div class="alert alert-success text-center">${success}</div>
                     </c:if>
 
-                    <!-- Chọn khách hàng -->
                     <form method="post" action="/invoice/save">
                         <div class="row mb-3 justify-content-center">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Chọn khách hàng:</label>
@@ -61,7 +60,7 @@
 
                         <hr>
 
-                        <!-- Bảng danh sách sách bán -->
+                        <!-- Bảng sách -->
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">
                                 <tr>
@@ -100,13 +99,21 @@
                             </tbody>
                         </table>
 
-                        <!-- Tổng cộng, VAT -->
+                        <!-- Tính tổng -->
                         <div class="row mb-2">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Tổng cộng:</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" id="totalAmount" readonly>
                             </div>
                         </div>
+
+                        <div class="row mb-2">
+                            <label class="col-sm-2 col-form-label text-end fw-bold">Giảm giá thành viên:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="discountAmount" readonly>
+                            </div>
+                        </div>
+
                         <div class="row mb-2">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Thuế VAT (%):</label>
                             <div class="col-sm-2">
@@ -114,6 +121,7 @@
                                     onchange="calculateTotal()" required>
                             </div>
                         </div>
+
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label text-end fw-bold">Thành tiền:</label>
                             <div class="col-sm-4">
@@ -121,7 +129,10 @@
                             </div>
                         </div>
 
-                        <!-- Nút thêm -->
+                        <!-- Hidden để truyền discountRate từ server -->
+                        <input type="hidden" id="discountRate" value="${discountRate}" />
+
+                        <!-- Nút -->
                         <div class="mb-3">
                             <button type="button" class="btn btn-outline-primary" onclick="addRow()">➕ Thêm
                                 dòng</button>
@@ -129,7 +140,6 @@
                                 cuối</button>
                         </div>
 
-                        <!-- Nút tạo -->
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-success">✔ Tạo hóa đơn</button>
                             <c:if test="${not empty lastInvoiceId}">
@@ -195,9 +205,13 @@
                         });
                         document.getElementById("totalAmount").value = total.toFixed(0);
 
+                        const discountRate = parseFloat(document.getElementById("discountRate").value) || 0;
+                        const discountAmount = total * discountRate / 100;
+                        document.getElementById("discountAmount").value = discountAmount.toFixed(0);
+
                         const vatPercent = parseFloat(document.getElementById("vatPercent").value) || 0;
-                        const vatAmount = total * vatPercent / 100;
-                        document.getElementById("grandTotal").value = (total + vatAmount).toFixed(0);
+                        const grandTotal = (total - discountAmount) * (1 + vatPercent / 100);
+                        document.getElementById("grandTotal").value = grandTotal.toFixed(0);
                     }
                 </script>
             </body>

@@ -1,9 +1,12 @@
 package com.bookstore.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Bookstore {
@@ -13,6 +16,17 @@ public class Bookstore {
 
     private String name;
     private String address;
+
+    @OneToOne(mappedBy = "bookstore", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CustomerSetting customerSetting;
+
+    public CustomerSetting getCustomerSetting() {
+        return customerSetting;
+    }
+
+    public void setCustomerSetting(CustomerSetting customerSetting) {
+        this.customerSetting = customerSetting;
+    }
 
     // Getters and Setters
     public Long getId() {

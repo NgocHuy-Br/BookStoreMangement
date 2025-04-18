@@ -43,6 +43,9 @@ public class InvoiceController {
         User user = (User) session.getAttribute("loggedInUser");
         Bookstore bookstore = user.getBookstore();
 
+        CustomerSetting setting = settingRepo.findByBookstore(bookstore).orElse(null);
+        model.addAttribute("discountRate", setting != null ? setting.getDiscountRate() : 0.0);
+
         model.addAttribute("books", bookRepo.findByBookstore(bookstore));
         model.addAttribute("customers", customerRepo.findByBookstore(bookstore));
         model.addAttribute("categories", categoryRepo.findByBookstore(bookstore));
