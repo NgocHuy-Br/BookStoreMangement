@@ -48,14 +48,15 @@
                                     action="/customer/setting/save">
                                     <form:hidden path="id" />
                                     <div class="mb-3">
-                                        <label class="form-label">Phần trăm giảm giá cho thành viên (%):</label>
+                                        <label class="form-label">Phần trăm giảm giá cho thành viên
+                                            (%):</label>
                                         <form:input path="discountRate" class="form-control" type="number" step="0.1"
                                             required="required" />
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Số điểm cần thiết để trở thành thành viên:</label>
+                                        <label class="form-label">Số điểm tích lũy để trở thành thành viên:</label>
                                         <form:input path="requiredPointsForMembership" class="form-control"
-                                            type="number" required="required" />
+                                            type="number" step="10" required="required" />
                                     </div>
                                     <button type="submit" class="btn btn-success">💾 Lưu</button>
                                 </form:form>

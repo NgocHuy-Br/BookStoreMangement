@@ -9,15 +9,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.OutputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/invoice")
@@ -38,7 +42,38 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
-    @GetMapping
+    @GetMapping("")
+    public String showInvoiceList(
+            Model model,
+            HttpSession session,
+            @RequestParam(name = "customer", required = false) String customerName,
+            @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+
+        User user = (User) session.getAttribute("loggedInUser");
+        Bookstore bookstore = user.getBookstore();
+
+        List<Invoice> invoices = invoiceService.filterInvoices(bookstore, customerName, from, to);
+        double totalValue = invoiceService.calculateTotal(invoices);
+
+        // Tính totalAfterVAT của từng invoice và bỏ vào Map
+        Map<Long, Double> invoiceTotals = new HashMap<>();
+        for (Invoice invoice : invoices) {
+            double total = invoiceService.calculateTotalForInvoice(invoice);
+            invoiceTotals.put(invoice.getId(), total);
+        }
+
+        model.addAttribute("invoices", invoices);
+        model.addAttribute("invoiceTotals", invoiceTotals);
+        model.addAttribute("totalValue", totalValue);
+        model.addAttribute("customer", customerName);
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
+
+        return "invoice/invoice-list";
+    }
+
+    @GetMapping("/create")
     public String showInvoiceForm(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         Bookstore bookstore = user.getBookstore();
@@ -56,36 +91,6 @@ public class InvoiceController {
         return "invoice/invoice-create";
     }
 
-    // @PostMapping("/save")
-    // public String saveInvoice(HttpServletRequest request, HttpSession session,
-    // RedirectAttributes redirectAttributes) {
-    // User currentUser = (User) session.getAttribute("loggedInUser");
-    // Long customerId = Long.parseLong(request.getParameter("customerId"));
-
-    // String[] bookIds = request.getParameterValues("bookId");
-    // String[] unitPrices = request.getParameterValues("unitPrice");
-    // String[] quantities = request.getParameterValues("quantity");
-    // double vat = Double.parseDouble(request.getParameter("vat"));
-
-    // List<Long> bookIdList = new ArrayList<>();
-    // List<Double> priceList = new ArrayList<>();
-    // List<Integer> quantityList = new ArrayList<>();
-
-    // for (int i = 0; i < bookIds.length; i++) {
-    // bookIdList.add(Long.parseLong(bookIds[i]));
-    // priceList.add(Double.parseDouble(unitPrices[i]));
-    // quantityList.add(Integer.parseInt(quantities[i]));
-    // }
-
-    // Invoice invoice = invoiceService.createInvoice(currentUser, customerId,
-    // bookIdList, quantityList, priceList,
-    // vat);
-    // session.setAttribute("vat_invoice_" + invoice.getId(), vat);
-
-    // redirectAttributes.addFlashAttribute("success", "Tạo hóa đơn thành công!");
-    // redirectAttributes.addFlashAttribute("lastInvoiceId", invoice.getId());
-    // return "redirect:/invoice";
-    // }
     @PostMapping("/save")
     public String saveInvoice(HttpServletRequest request, HttpSession session,
             RedirectAttributes redirectAttributes) {
@@ -117,7 +122,7 @@ public class InvoiceController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
 
-        return "redirect:/invoice";
+        return "redirect:/invoice/create";
     }
 
     @GetMapping("/pdf/{id}")
@@ -127,11 +132,12 @@ public class InvoiceController {
             return;
 
         List<InvoiceItem> items = invoiceItemRepo.findByInvoice(invoice);
-        Object vatObj = session.getAttribute("vat_invoice_" + id);
-        double vat = 0.0;
-        if (vatObj != null) {
-            vat = (double) vatObj;
-        }
+        // Object vatObj = session.getAttribute("vat_invoice_" + id);
+        // double vat = 0.0;
+        // if (vatObj != null) {
+        // vat = (double) vatObj;
+        // }
+        double vat = invoice.getVatRate();
 
         byte[] pdfBytes = invoiceService.exportInvoiceToPDF(invoice, items, vat);
         try {

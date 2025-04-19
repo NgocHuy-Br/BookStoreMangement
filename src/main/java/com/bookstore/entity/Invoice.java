@@ -1,6 +1,8 @@
 package com.bookstore.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +20,8 @@ public class Invoice {
 
     private double discountRate;
     private double discountAmount;
+
+    private double vatRate;
 
     @ManyToOne
     private Customer customer;
@@ -39,6 +43,10 @@ public class Invoice {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public Date getCreatedAtAsDate() {
+        return Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
@@ -83,6 +91,14 @@ public class Invoice {
 
     public void setBookstore(Bookstore bookstore) {
         this.bookstore = bookstore;
+    }
+
+    public double getVatRate() {
+        return vatRate;
+    }
+
+    public void setVatRate(double vatRate) {
+        this.vatRate = vatRate;
     }
 
     @Override
