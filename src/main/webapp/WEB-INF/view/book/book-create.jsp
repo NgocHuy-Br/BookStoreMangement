@@ -37,8 +37,9 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Giá:</label>
-                                        <form:input path="price" type="number" step="0.01" class="form-control"
+                                        <form:input path="price" type="number" step="100" class="form-control"
                                             required="required" />
+
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Tồn kho:</label>
