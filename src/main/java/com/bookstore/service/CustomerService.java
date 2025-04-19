@@ -17,9 +17,6 @@ public class CustomerService {
     @Autowired
     private CustomerSettingRepository settingRepo;
 
-    // @Autowired
-    // private InvoiceRepository invoiceRepo;
-
     public List<Customer> getCustomersByBookstore(Bookstore bookstore) {
         return customerRepo.findByBookstore(bookstore);
     }
@@ -38,12 +35,7 @@ public class CustomerService {
         settingRepo.save(setting);
     }
 
-    // public boolean canDeleteCustomer(Customer customer) {
-    // return invoiceRepo.findByCustomer(customer).isEmpty();
-    // }
-
     public boolean canDeleteCustomer(Customer customer) {
-        // Nếu Customer chưa có hóa đơn nào => được xóa
         return customer.getInvoices() == null || customer.getInvoices().isEmpty();
     }
 

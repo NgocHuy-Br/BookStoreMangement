@@ -8,6 +8,20 @@
             <head>
                 <title>Danh sách nhân viên</title>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    .custom-alert {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        border-radius: 6px;
+                        font-weight: 500;
+                    }
+
+                    .alert-container {
+                        display: flex;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                    }
+                </style>
             </head>
 
             <body>

@@ -35,22 +35,24 @@ public class InvoicePdfUtil {
             doc.add(new Paragraph("Nhà sách: " + bookstore.getName()).setBold().setTextAlignment(TextAlignment.CENTER));
             doc.add(new Paragraph("Địa chỉ: " + bookstore.getAddress()).setItalic()
                     .setTextAlignment(TextAlignment.CENTER));
-            doc.add(new Paragraph("HÓA ĐƠN BÁN HÀNG").setBold().setFontSize(18).setTextAlignment(TextAlignment.CENTER));
+            doc.add(new Paragraph("\nHÓA ĐƠN BÁN HÀNG").setBold().setFontSize(18)
+                    .setTextAlignment(TextAlignment.CENTER));
 
+            doc.add(new Paragraph("Mã hóa đơn: " + invoice.getId()));
             doc.add(new Paragraph("Khách hàng: " + customer.getName()));
-            doc.add(new Paragraph("SĐT: " + customer.getPhone()));
-            doc.add(new Paragraph("\n"));
+            doc.add(new Paragraph("Số điện thoại: " + customer.getPhone()));
+            doc.add(new Paragraph("\nCHI TIẾT ĐƠN HÀNG").setBold().setTextAlignment(TextAlignment.CENTER));
 
             // Bảng sách
-            Table table = new Table(UnitValue.createPercentArray(new float[] { 7, 30, 15, 15, 15, 13 }))
+            Table table = new Table(UnitValue.createPercentArray(new float[] { 7, 25, 15, 23, 15, 10 }))
                     .useAllAvailableWidth();
 
-            table.addHeaderCell("STT").setTextAlignment(TextAlignment.CENTER);
-            table.addHeaderCell("Tên sách");
-            table.addHeaderCell("Tác giả");
-            table.addHeaderCell("Thể loại");
-            table.addHeaderCell("Giá bán");
-            table.addHeaderCell("Số lượng");
+            table.addHeaderCell(new Cell().add(new Paragraph("STT").setBold()).setTextAlignment(TextAlignment.CENTER));
+            table.addHeaderCell(new Cell().add(new Paragraph("Tên sách").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Tác giả").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Danh mục").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Đơn giá").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Số lượng").setBold()));
 
             double total = 0;
             int index = 1;
@@ -70,13 +72,13 @@ public class InvoicePdfUtil {
             double grandTotal = (total - discountAmount) + vat;
 
             // Tổng kết
-            doc.add(new Paragraph("Tổng cộng: " + String.format("%,.0f", total) + " VND"));
-            doc.add(new Paragraph("Giảm giá thành viên: " + String.format("%,.0f", discountAmount) + " VND"));
-            doc.add(new Paragraph("Thuế VAT: " + vatRate + "%"));
-            doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grandTotal) + " VND"));
+            doc.add(new Paragraph("Tổng cộng: " + String.format("%,.0f", total) + " đ").setBold());
+            doc.add(new Paragraph("Giảm giá thành viên: " + String.format("%,.0f", discountAmount) + " đ").setBold());
+            doc.add(new Paragraph("Thuế VAT: " + vatRate + "%").setBold());
+            doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grandTotal) + " đ").setBold());
 
             LocalDateTime created = invoice.getCreatedAt();
-            doc.add(new Paragraph("\n\nNgày " + created.getDayOfMonth() +
+            doc.add(new Paragraph("\nNgày " + created.getDayOfMonth() +
                     " Tháng " + created.getMonthValue() +
                     " Năm " + created.getYear()));
             doc.add(new Paragraph("Người lập: " + invoice.getUser().getUsername()));

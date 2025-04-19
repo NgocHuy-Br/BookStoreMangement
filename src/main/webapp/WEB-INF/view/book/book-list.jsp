@@ -23,10 +23,24 @@
                             margin: 0 2px;
                         }
                     </style>
+                    <style>
+                        .custom-alert {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            border-radius: 6px;
+                            font-weight: 500;
+                        }
+
+                        .alert-container {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        }
+                    </style>
                 </head>
 
                 <body>
-                    <div class="container mt-3">
+                    <div class="container mt-5">
                         <div class="text-center mb-3">
                             <a href="${pageContext.request.contextPath}/book/create" class="btn btn-success">
                                 <i class="bi bi-plus-circle"></i> ➕ Thêm sách mới
@@ -69,13 +83,13 @@
                                 <tr>
                                     <th style="width: 5%;">STT</th>
                                     <th style="width: 24%;">Tên sách</th>
-                                    <th style="width: 12%;">Tác giả</th>
+                                    <th style="width: 10%;">Tác giả</th>
                                     <th style="width: 17%;">Danh mục</th>
                                     <th style="width: 12%;">Giá</th>
-                                    <th style="width: 7%;">Tồn kho</th>
+                                    <th style="width: 9%;">Tồn kho</th>
                                     <th style="width: 9%;">Đã bán ra</th>
 
-                                    <th style="width: 15%;">Thao tác</th>
+                                    <th style="width: 17%;">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>

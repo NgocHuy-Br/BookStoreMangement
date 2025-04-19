@@ -22,22 +22,35 @@
                             margin-top: 20px;
                         }
                     </style>
+                    <style>
+                        .custom-alert {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            border-radius: 6px;
+                            font-weight: 500;
+                        }
+
+                        .alert-container {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        }
+                    </style>
                 </head>
 
                 <body>
-                    <div class="container mt-4">
-                        <div class="text-center mb-4">
+                    <div class="container mt-5">
+                        <div class="text-center mb-5">
                             <a href="${pageContext.request.contextPath}/invoice/create" class="btn btn-success">
-                                ➕ Tạo hóa đơn mới
+                                ➕ Tạo đơn bán hàng mới
                             </a>
                         </div>
 
-                        <!-- Form lọc -->
                         <form method="get" class="mb-3">
-                            <div class="row g-2 align-items-center">
+                            <div class="row justify-content-center">
                                 <div class="col-md-4">
                                     <input type="text" name="customer" class="form-control"
-                                        placeholder="Tìm theo tên khách hàng..." value="${customer}">
+                                        placeholder="🔍 Tìm theo tên khách hàng..." value="${customer}">
                                 </div>
                                 <div class="col-md-2">
                                     <input type="date" name="from" class="form-control" value="${from}">
@@ -47,23 +60,23 @@
                                     <input type="date" name="to" class="form-control" value="${to}">
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary">🔍 Tìm kiếm</button>
+                                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                                 </div>
                             </div>
                         </form>
 
-                        <h5 class="mb-3">📋 Danh sách hóa đơn</h5>
+                        <h3 class="row justify-content-center">📋 Danh sách bán hàng</h3>
 
                         <table class="table table-bordered table-hover">
                             <thead class="table-secondary">
                                 <tr>
-                                    <th>STT</th>
-                                    <th>Mã</th>
-                                    <th>Khách hàng</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Người tạo</th>
-                                    <th>Tổng tiền (sau VAT)</th>
-                                    <th>Hành động</th>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 12%;">Mã đơn hàng</th>
+                                    <th style="width: 18%;">Khách hàng</th>
+                                    <th style="width: 18%;">Thời gian tạo</th>
+                                    <th style="width: 15%;">Người tạo</th>
+                                    <th style="width: 15%;">Tổng thành tiền</th>
+                                    <th style="width: 15%;">Xem đơn hàng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -79,8 +92,8 @@
                                         </td>
                                         <td>${inv.user.username}</td>
                                         <td>
-                                            <fmt:formatNumber value="${invoiceTotals[inv.id]}" type="number"
-                                                groupingUsed="true" />
+                                            <fmt:formatNumber value="${invoiceTotals[inv.id]}" type="currency"
+                                                currencySymbol="" groupingUsed="true" maxFractionDigits="0" />
                                         </td>
 
                                         <td>
@@ -93,8 +106,9 @@
                         </table>
 
                         <div class="text-end total-section">
-                            Tổng giá trị các hóa đơn hiển thị:
-                            <fmt:formatNumber value="${totalValue}" type="number" groupingUsed="true" /> VND
+                            Tổng cộng:
+                            <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
+                                groupingUsed="true" maxFractionDigits="0" /> đ
                         </div>
                     </div>
                 </body>

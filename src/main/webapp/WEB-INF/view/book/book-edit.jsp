@@ -50,8 +50,8 @@
                                         <form:input path="inventory" type="number" class="form-control"
                                             readonly="true" />
                                     </div>
-                                    <button type="submit" class="btn btn-success">Cập nhật</button>
-                                    <a href="/book" class="btn btn-secondary">Hủy</a>
+                                    <button type="submit" class="btn btn-success">💾 Cập nhật</button>
+                                    <a href="/book" class="btn btn-secondary">⬅️ Quay lại</a>
                                 </form:form>
                             </div>
                         </div>

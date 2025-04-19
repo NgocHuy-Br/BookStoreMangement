@@ -29,6 +29,20 @@
                             width: 100px;
                         }
                     </style>
+                    <style>
+                        .custom-alert {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            border-radius: 6px;
+                            font-weight: 500;
+                        }
+
+                        .alert-container {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        }
+                    </style>
                 </head>
 
                 <body>
@@ -36,28 +50,38 @@
                         <h3 class="text-center mb-4">Tạo đơn nhập hàng</h3>
 
                         <c:if test="${not empty success}">
-                            <div class="alert alert-success text-center">${success}</div>
+                            <div class="alert-container">
+                                <div class="alert alert-success custom-alert">
+                                    ${success}
+                                </div>
+                            </div>
                         </c:if>
 
-                        <div class="text-center mb-3">
-                            <a href="/supplier/create?returnUrl=/import" class="btn btn-outline-primary mb-3">
-                                <i class="bi bi-plus-circle"></i> ➕ Thêm nhà cung cấp
-                            </a>
-                        </div>
 
                         <form method="post" action="/import/save">
-                            <!-- Nhà cung cấp áp dụng cho cả đơn -->
-                            <div class="mb-3 row">
-                                <label class="col-sm-2 col-form-label text-end fw-bold">Chọn nhà cung cấp:</label>
-                                <div class="col-sm-6">
-                                    <select name="supplierId" class="form-select" required>
+
+                            <div class="row mb-4 justify-content-center align-items-center">
+                                <!-- Label chọn nhà cung cấp -->
+                                <label class="col-auto col-form-label fw-bold">Chọn nhà cung cấp:</label>
+
+                                <!-- Select nhà cung cấp -->
+                                <div class="col-auto">
+                                    <select name="supplierId" class="form-select" required style="min-width: 200px;">
                                         <option value="">-- Chọn --</option>
                                         <c:forEach var="sup" items="${suppliers}">
                                             <option value="${sup.id}">${sup.name}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
+
+                                <!-- Nút thêm nhà cung cấp -->
+                                <div class="col-auto">
+                                    <a href="/supplier/create?returnUrl=/import" class="btn btn-success">
+                                        ➕ Thêm nhà cung cấp
+                                    </a>
+                                </div>
                             </div>
+
 
                             <hr>
 
@@ -107,9 +131,6 @@
                                     <input type="text" class="form-control" id="totalAmount" readonly>
                                 </div>
                             </div>
-
-                            <!-- Thêm trường VAT vào form -->
-                            <!-- VAT input -->
                             <div class="row mb-2">
                                 <label class="col-sm-2 col-form-label text-end fw-bold">Thuế VAT (%):</label>
                                 <div class="col-sm-2">
@@ -117,9 +138,6 @@
                                         onchange="calculateTotal()" required>
                                 </div>
                             </div>
-
-
-
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label text-end fw-bold">Thành tiền:</label>
                                 <div class="col-sm-4">
@@ -134,18 +152,14 @@
                                     dòng cuối</button>
                             </div>
 
-                            <div class="d-flex justify-content-end">
+                            <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-success">✔ Nhập hàng</button>
 
                                 <c:if test="${not empty lastImportId}">
-                                    <a href="/import/pdf/${lastImportId}" class="btn btn-outline-dark ms-2">⬇ Xuất
-                                        PDF</a>
+                                    <a href="/import/pdf/${lastImportId}" class="btn btn-outline-dark">⬇ Xuất PDF</a>
                                 </c:if>
 
-
-
-
-                                <a href="/import" class="btn btn-secondary me-2">Quay lại</a>
+                                <a href="/import" class="btn btn-secondary">⬅️ Quay lại</a>
                             </div>
                         </form>
                     </div>

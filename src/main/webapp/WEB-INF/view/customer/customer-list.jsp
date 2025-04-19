@@ -27,44 +27,64 @@
                             margin: 40px 0;
                         }
                     </style>
+                    <style>
+                        .custom-alert {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            border-radius: 6px;
+                            font-weight: 500;
+                        }
+
+                        .alert-container {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        }
+                    </style>
                 </head>
 
                 <body>
                     <div class="container mt-5">
 
                         <!-- Tiêu đề -->
-                        <h3 class="text-center mb-4"><i class="bi bi-bullseye"></i> Thiết lập Chăm sóc
-                            Khách hàng</h3>
+                        <h3 class="text-center mb-4"><i class="bi bi-bullseye"></i> Thiết lập giảm giá cho
+                            khách hàng thành viên</h3>
 
                         <!-- Thông báo thành công -->
                         <c:if test="${not empty message}">
                             <div class="alert alert-info text-center">${message}</div>
                         </c:if>
 
-                        <!-- FORM CẬP NHẬT CustomerSetting - ĐÃ THÊM BỌC GỌN LẠI -->
-                        <div class="row justify-content-center">
-                            <div class="col-md-3 col-12">
+                        <div class="row justify-content-center mb-4">
+                            <div class="col-md-12">
                                 <form:form method="post" modelAttribute="customerSetting"
                                     action="/customer/setting/save">
                                     <form:hidden path="id" />
-                                    <div class="mb-3">
-                                        <label class="form-label">Phần trăm giảm giá cho thành viên
-                                            (%):</label>
-                                        <form:input path="discountRate" class="form-control" type="number" step="0.1"
-                                            required="required" />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Số điểm tích lũy để trở thành thành viên:</label>
-                                        <form:input path="requiredPointsForMembership" class="form-control"
-                                            type="number" step="10" required="required" />
-                                    </div>
-                                    <button type="submit" class="btn btn-success">💾 Lưu</button>
-                                </form:form>
 
+                                    <div class="row justify-content-center mb-3">
+                                        <label class="col-sm-4 col-form-label text-end fw-bold">Phần trăm giảm giá cho
+                                            thành viên (%):</label>
+                                        <div class="col-sm-1">
+                                            <form:input path="discountRate" type="number" step="0.1"
+                                                class="form-control text-center" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row justify-content-center mb-3">
+                                        <label class="col-sm-4 col-form-label text-end fw-bold">Số điểm tích lũy để trở
+                                            thành thành viên:</label>
+                                        <div class="col-sm-1">
+                                            <form:input path="requiredPointsForMembership" type="number" step="1"
+                                                class="form-control text-center" />
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-success">💾 Lưu cài đặt</button>
+                                    </div>
+                                </form:form>
                             </div>
                         </div>
-
-
                         <!-- Gạch phân cách -->
                         <div class="divider"></div>
 
@@ -72,13 +92,21 @@
                         <h3 class="text-center mb-4"><i class="bi bi-people"></i> Danh sách khách hàng
                         </h3>
 
+                        <c:if test="${not empty customerMessage}">
+                            <div class="alert alert-info text-center">${customerMessage}</div>
+                        </c:if>
+
                         <!-- Form tìm kiếm và nút thêm khách hàng -->
                         <div class="row g-3 justify-content-between align-items-center mb-3">
                             <form class="col-md-6 col-12 d-flex" method="get"
                                 action="${pageContext.request.contextPath}/customer">
                                 <input type="text" class="form-control me-2" name="keyword"
-                                    placeholder="🔍 Tìm theo tên khách hàng..." value="${keyword}">
-                                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                    placeholder="🔍 Tìm theo tên khách hàng..." value="${keyword}"
+                                    style="width: 300px;" />
+
+                                <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Tìm
+                                    kiếm</button>
+
                             </form>
 
                             <div class="col-md-auto text-end">
@@ -95,15 +123,18 @@
 
 
                         <table class="table table-bordered table-hover">
+
+
                             <thead class="table-secondary">
                                 <tr>
-                                    <th>STT</th>
-                                    <th>Tên</th>
-                                    <th>Email</th>
-                                    <th>SĐT</th>
-                                    <th>Điểm tích lũy</th>
-                                    <th>Thành viên</th>
-                                    <th>Hành động</th>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 20%;">Tên</th>
+                                    <th style="width: 20%;">Email</th>
+                                    <th style="width: 15%;">Số điện thoại</th>
+                                    <th style="width: 10%;">Điểm tích lũy</th>
+                                    <th style="width: 15%;">Thành viên</th>
+                                    <th style="width: 15%;">Hành động</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -133,7 +164,7 @@
 
                                             <a href="/customer/delete/${customer.id}" class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Bạn có chắc muốn xóa khách hàng này?')">
-                                                Xóa
+                                                🗑️ Xóa
                                             </a>
                                         </td>
                                     </tr>

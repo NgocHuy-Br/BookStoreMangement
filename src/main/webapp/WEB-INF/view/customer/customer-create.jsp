@@ -12,7 +12,7 @@
             <body>
                 <div class="container mt-5">
                     <div class="row justify-content-center">
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <h3 class="text-center mb-4">Thêm khách hàng</h3>
                             <form:form method="post" modelAttribute="customer">
                                 <div class="mb-3">
@@ -34,8 +34,8 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between">
-                                    <a href="/customer" class="btn btn-secondary">Hủy</a>
-                                    <button type="submit" class="btn btn-success">Lưu</button>
+                                    <button type="submit" class="btn btn-success">💾 Tạo mới</button>
+                                    <a href="/customer" class="btn btn-secondary">⬅️ Quay lại</a>
                                 </div>
                             </form:form>
                         </div>

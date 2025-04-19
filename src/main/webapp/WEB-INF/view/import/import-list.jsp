@@ -22,21 +22,35 @@
                             font-size: 18px;
                         }
                     </style>
+                    <style>
+                        .custom-alert {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            border-radius: 6px;
+                            font-weight: 500;
+                        }
+
+                        .alert-container {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        }
+                    </style>
                 </head>
 
                 <body>
-                    <div class="container mt-4">
-                        <div class="text-center mb-4">
+                    <div class="container mt-5">
+                        <div class="text-center mb-5">
                             <a href="${pageContext.request.contextPath}/import/create" class="btn btn-success">
-                                <i class="bi bi-plus-lg"></i> Tạo đơn hàng mới
+                                <i class="bi bi-plus-lg"></i> ➕ Tạo đơn nhập hàng mới
                             </a>
                         </div>
 
                         <form method="get" class="mb-3">
-                            <div class="row g-2 align-items-center">
+                            <div class="row justify-content-center">
                                 <div class="col-md-4">
                                     <input type="text" name="supplier" class="form-control"
-                                        placeholder="Tìm theo tên nhà cung cấp..." value="${supplier}">
+                                        placeholder="🔍 Tìm theo tên nhà cung cấp..." value="${supplier}">
                                 </div>
                                 <div class="col-md-2">
                                     <input type="date" name="from" class="form-control" value="${from}">
@@ -46,12 +60,12 @@
                                     <input type="date" name="to" class="form-control" value="${to}">
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary">🔍 Tìm kiếm</button>
+                                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                                 </div>
                             </div>
                         </form>
 
-                        <h5 class="mb-3">📋 Danh sách nhập hàng</h5>
+                        <h3 class="row justify-content-center">📋 Danh sách nhập hàng</h3>
 
                         <table class="table table-bordered table-hover">
                             <thead class="table-secondary">
@@ -59,11 +73,10 @@
                                     <th style="width: 5%;">STT</th>
                                     <th style="width: 10%;">Mã đơn hàng</th>
                                     <th style="width: 20%;">Nhà cung cấp</th>
-                                    <th style="width: 20%;">Ngày tạo</th>
+                                    <th style="width: 20%;">Thời gian tạo</th>
                                     <th style="width: 15%;">Người tạo</th>
-
-                                    <th style="width: 20%;">Tổng tiền (có VAT)</th>
-                                    <th style="width: 20%;">Xem đơn hàng</th>
+                                    <th style="width: 15%;">Tổng thành tiền</th>
+                                    <th style="width: 25%;">Xem đơn hàng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -77,13 +90,9 @@
                                                 pattern="dd/MM/yyyy HH:mm:ss" />
                                         </td>
                                         <td>${order.createdBy.username}</td>
-
-
-
                                         <td>
                                             <fmt:formatNumber value="${order.totalAmount}" type="currency"
                                                 currencySymbol="" groupingUsed="true" maxFractionDigits="0" />
-
                                         </td>
                                         <td>
                                             <a href="${pageContext.request.contextPath}/import/pdf/${order.id}"
@@ -97,10 +106,10 @@
                         </table>
 
                         <div class="text-end total-section">
-                            Tổng giá trị các đơn hiển thị:
+                            Tổng cộng:
                             <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
-                                groupingUsed="true" />
-                            VND
+                                groupingUsed="true" maxFractionDigits="0" /> đ
+
                         </div>
                     </div>
                 </body>

@@ -14,7 +14,7 @@
             <body>
                 <div class="container mt-5">
                     <div class="row justify-content-center">
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <h3 class="text-center mb-4">Chỉnh sửa khách hàng</h3>
 
                             <form:form modelAttribute="customer" method="post" action="/customer/update">
@@ -40,9 +40,12 @@
                                     <form:input path="loyaltyPoints" class="form-control" type="number"
                                         readonly="true" />
                                 </div>
-
-                                <button type="submit" class="btn btn-success">Lưu</button>
-                                <a href="/customer" class="btn btn-secondary">Hủy</a>
+                                <div class="container mt-3">
+                                    <div class="d-flex justify-content-between">
+                                        <button type="submit" class="btn btn-success">💾 Cập nhật</button>
+                                        <a href="/customer" class="btn btn-secondary">⬅️ Quay lại</a>
+                                    </div>
+                                </div>
                             </form:form>
                         </div>
                     </div>

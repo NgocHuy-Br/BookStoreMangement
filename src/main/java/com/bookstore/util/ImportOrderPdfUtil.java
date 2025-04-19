@@ -33,18 +33,17 @@ public class ImportOrderPdfUtil {
 
             doc.add(new Paragraph("Mã đơn: " + order.getId()));
             doc.add(new Paragraph("Nhà cung cấp: " + order.getSupplier().getName()));
-            doc.add(new Paragraph("Ngày tạo: " + order.getCreatedAt().toLocalDate()));
 
-            doc.add(new Paragraph("\nCHI TIẾT ĐƠN HÀNG").setBold());
+            doc.add(new Paragraph("\nCHI TIẾT ĐƠN HÀNG").setBold().setTextAlignment(TextAlignment.CENTER));
 
-            Table table = new Table(UnitValue.createPercentArray(new float[] { 5, 30, 15, 15, 15, 15 }))
+            Table table = new Table(UnitValue.createPercentArray(new float[] { 6, 29, 15, 15, 15, 15 }))
                     .useAllAvailableWidth();
-            table.addHeaderCell("STT").setTextAlignment(TextAlignment.CENTER);
-            table.addHeaderCell("Tên sách");
-            table.addHeaderCell("Tác giả");
-            table.addHeaderCell("Danh mục");
-            table.addHeaderCell("Đơn giá");
-            table.addHeaderCell("Số lượng");
+            table.addHeaderCell(new Cell().add(new Paragraph("STT").setBold()).setTextAlignment(TextAlignment.CENTER));
+            table.addHeaderCell(new Cell().add(new Paragraph("Tên sách").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Tác giả").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Danh mục").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Đơn giá").setBold()));
+            table.addHeaderCell(new Cell().add(new Paragraph("Số lượng").setBold()));
 
             double total = 0;
             int i = 1;
@@ -62,9 +61,9 @@ public class ImportOrderPdfUtil {
 
             double vat = total * vatRate / 100;
             double grand = total + vat;
-            doc.add(new Paragraph("\nTổng cộng: " + String.format("%,.0f", total) + " VND"));
-            doc.add(new Paragraph("Thuế VAT: " + vatRate + "%"));
-            doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grand) + " VND"));
+            doc.add(new Paragraph("Tổng cộng: " + String.format("%,.0f", total) + " đ").setBold());
+            doc.add(new Paragraph("Thuế VAT: " + vatRate + "%").setBold());
+            doc.add(new Paragraph("Thành tiền: " + String.format("%,.0f", grand) + " đ").setBold());
 
             LocalDateTime created = order.getCreatedAt();
             doc.add(new Paragraph("\nNgày " + created.getDayOfMonth() + " Tháng " + created.getMonthValue() + " Năm "

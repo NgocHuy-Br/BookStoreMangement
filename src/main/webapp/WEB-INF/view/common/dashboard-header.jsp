@@ -23,7 +23,7 @@
     </div>
 
     <!-- Dòng tab chức năng -->
-    <div style="background-color: #e9ecef; padding: 12px 0; display: flex; justify-content: center; gap: 30px;">
+    <div style="background-color: #e9ecef; padding: 12px 0; display: flex; justify-content: center; gap: 60px;">
       <a href="/admin/employee" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
               <c:if test='${activeTab eq " employee"}'>background-color: #dee2e6; font-weight: bold; border-radius:
         4px;</c:if>'">
@@ -45,7 +45,7 @@
       <a href="/invoice" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 20px; 
               <c:if test='${activeTab eq " invoice"}'>background-color: #dee2e6; font-weight: bold; border-radius: 4px;
         </c:if>'">
-        🧾 Hóa đơn bán hàng
+        🧾 Bán hàng
       </a>
 
       <!-- <a href="/admin/stats" style="text-decoration: none; font-size: 16px; color: black; padding: 5px 10px; 
