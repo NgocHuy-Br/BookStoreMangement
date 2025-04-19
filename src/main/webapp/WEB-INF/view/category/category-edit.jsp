@@ -9,12 +9,13 @@
                     <title>Chỉnh sửa danh mục</title>
                     <link rel="stylesheet"
                         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+                        
                 </head>
 
                 <body>
                     <div class="container mt-5">
                         <div class="row justify-content-center">
-                            <div class="col-md-6 col-12">
+                            <div class="col-md-4 col-12">
                                 <h3 class="text-center mb-4">Chỉnh sửa danh mục</h3>
 
                                 <form:form method="post" modelAttribute="category" action="/category/edit">
@@ -30,9 +31,9 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between">
-                                        <button type="submit" class="btn btn-success">Cập nhật</button>
+                                        <button type="submit" class="btn btn-success">💾 Cập nhật</button>
                                         <a href="${returnUrl != null ? returnUrl : '/category'}"
-                                            class="btn btn-secondary">Hủy</a>
+                                            class="btn btn-secondary">⬅️ Quay lại</a>
                                     </div>
                                 </form:form>
                             </div>

@@ -11,6 +11,21 @@
                         <title>Danh sách danh mục</title>
                         <link rel="stylesheet"
                             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+                        <style>
+                            .custom-alert {
+                                display: inline-block;
+                                padding: 10px 20px;
+                                border-radius: 6px;
+                                font-weight: 500;
+                            }
+
+                            .alert-container {
+                                display: flex;
+                                justify-content: center;
+                                margin-bottom: 20px;
+                            }
+                        </style>
+
                     </head>
 
                     <body>
@@ -18,40 +33,38 @@
                             <div class="row justify-content-center mb-4">
                                 <div class="col-md-8">
                                     <form:form method="post" action="/category/create" modelAttribute="category">
-                                        <div class="d-flex gap-2">
+                                        <c:if test="${not empty returnUrl}">
+                                            <input type="hidden" name="returnUrl" value="${returnUrl}" />
+                                        </c:if>
 
-                                            <!-- Input hidden giữ lại returnUrl khi submit -->
-                                            <c:if test="${not empty returnUrl}">
-                                                <input type="hidden" name="returnUrl" value="${returnUrl}" />
-                                            </c:if>
-
-                                            <form:input path="name" placeholder="Nhập tên danh mục" class="form-control"
-                                                required="required" />
+                                        <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+                                            <form:input path="name" placeholder="Nhập tên danh mục thêm mới"
+                                                class="form-control w-50" required="required" />
                                             <button type="submit" class="btn btn-success">➕ Thêm danh mục</button>
-
-                                            <!-- Nút quay lại -->
-                                            <c:if test="${not empty returnUrl}">
-                                                <a href="${returnUrl}" class="btn btn-secondary">⬅ Quay lại</a>
-                                            </c:if>
+                                            <a href="${returnUrl}" class="btn btn-secondary">⬅ Quay lại</a>
                                         </div>
+
                                     </form:form>
                                 </div>
                             </div>
 
-
-                            <!-- Thông báo lỗi hoặc thành công -->
+                            <!-- THÔNG BÁO -->
                             <c:if test="${not empty error}">
-                                <div class="alert alert-danger mt-3">${error}</div>
+                                <div class="alert-container">
+                                    <div class="alert alert-danger custom-alert">${error}</div>
+                                </div>
                             </c:if>
 
                             <c:if test="${not empty success}">
-                                <div class="alert alert-success mt-3">${success}</div>
+                                <div class="alert-container">
+                                    <div class="alert alert-success custom-alert">${success}</div>
+                                </div>
                             </c:if>
 
                             <!-- Tiêu đề -->
                             <div class="row justify-content-center mb-3">
                                 <div class="col-md-8 text-center">
-                                    <h5 class="text-primary mt-3"><i class="bi bi-folder"></i> Danh mục hiện tại</h5>
+                                    <h3 class="text-center mb-4"><i class="bi bi-book"></i> 📋 Danh mục hiện tại</h3>
                                 </div>
                             </div>
 
@@ -79,7 +92,7 @@
                                                                 <c:param name="returnUrl" value="${returnUrl}" />
                                                             </c:if>
                                                         </c:url>
-                                                        <a href="${editUrl}" class="btn btn-warning btn-sm">Sửa</a>
+                                                        <a href="${editUrl}" class="btn btn-warning btn-sm">✏️ Sửa</a>
 
                                                         <!-- Xóa -->
                                                         <c:url var="deleteUrl" value="/category/delete/${cate.id}">
@@ -88,7 +101,8 @@
                                                             </c:if>
                                                         </c:url>
                                                         <a href="${deleteUrl}" class="btn btn-danger btn-sm"
-                                                            onclick="return confirm('Bạn có chắc muốn xóa danh mục này?');">Xóa</a>
+                                                            onclick="return confirm('Bạn có chắc muốn xóa danh mục này?');">🗑️
+                                                            Xóa</a>
                                                     </td>
                                                 </tr>
                                             </c:forEach>

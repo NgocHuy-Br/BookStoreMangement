@@ -36,25 +36,7 @@ public class CategoryController {
         model.addAttribute("categories", categories);
         model.addAttribute("returnUrl", returnUrl);
 
-        return "category/category-list"; // hoặc category.jsp tùy bạn đặt tên
-    }
-
-    // POST: Xử lý thêm mới ngay trên cùng trang
-    @PostMapping("/create")
-    public String createCategory(@ModelAttribute("category") Category category,
-            @RequestParam(required = false) String returnUrl,
-            HttpSession session) {
-        User currentUser = (User) session.getAttribute("loggedInUser");
-        category.setBookstore(currentUser.getBookstore());
-
-        categoryService.saveCategory(category);
-
-        //Redirect lại /category với returnUrl được giữ nguyên
-        if (returnUrl != null && !returnUrl.isEmpty()) {
-            return "redirect:/category?returnUrl=" + returnUrl;
-        } else {
-            return "redirect:/category";
-        }
+        return "category/category-list";
     }
 
     @GetMapping("/create")
@@ -64,7 +46,28 @@ public class CategoryController {
         return "category/category-create";
     }
 
-    
+    @PostMapping("/create")
+    public String createCategory(@ModelAttribute("category") Category category,
+            @RequestParam(required = false) String returnUrl,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        category.setBookstore(currentUser.getBookstore());
+
+        // Kiểm tra tên đã tồn tại
+        if (categoryService.isNameExists(category.getName(),
+                currentUser.getBookstore())) {
+            redirectAttributes.addFlashAttribute("error", "Tên danh mục đã tồn tại!");
+            return "redirect:/category" + (returnUrl != null ? "?returnUrl=" + returnUrl
+                    : "");
+        }
+
+        categoryService.saveCategory(category);
+        redirectAttributes.addFlashAttribute("success", "Tạo danh mục thành công!");
+        return "redirect:/category" + (returnUrl != null ? "?returnUrl=" + returnUrl
+                : "");
+    }
+
     @GetMapping("/delete/{id}")
     public String deleteCategory(@PathVariable Long id,
             @RequestParam(required = false) String returnUrl,
@@ -110,9 +113,13 @@ public class CategoryController {
         User currentUser = (User) session.getAttribute("loggedInUser");
         category.setBookstore(currentUser.getBookstore());
 
+        if (categoryService.isNameTakenByOther(category.getId(), category.getName(), currentUser.getBookstore())) {
+            redirectAttributes.addFlashAttribute("error", "Tên danh mục đã tồn tại!");
+            return "redirect:/category/edit/" + category.getId() + (returnUrl != null ? "?returnUrl=" + returnUrl : "");
+        }
+
         categoryService.saveCategory(category);
         redirectAttributes.addFlashAttribute("success", "Cập nhật danh mục thành công!");
-
         return "redirect:/category" + (returnUrl != null ? "?returnUrl=" + returnUrl : "");
     }
 

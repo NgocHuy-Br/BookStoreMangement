@@ -2,7 +2,8 @@
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
         <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-            <html>
+            <!DOCTYPE html>
+            <html lang="vi">
 
             <head>
                 <title>Danh sách nhân viên</title>
@@ -11,24 +12,32 @@
 
             <body>
                 <div class="container mt-5">
-                    <div class="text-center mb-4">
-                        <h3>📋 Danh sách nhân viên</h3>
-                    </div>
-
-                    <form method="get" action="/admin/employee" class="row mb-3 justify-content-center">
-                        <div class="col-md-4">
-                            <input type="text" name="keyword" value="${keyword}" class="form-control"
-                                placeholder="Tìm theo tên đăng nhập..." />
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                        </div>
-                    </form>
-
-                    <div class="mb-3 text-end">
+                    <div class="mb-4 text-center">
                         <a href="/admin/employee/create" class="btn btn-success">➕ Thêm mới tài khoản nhân viên</a>
                     </div>
 
+                    <div class="text-center mt-5">
+                        <form method="get" action="/admin/employee" class="row mb-3 justify-content-center">
+                            <div class="col-md-4">
+                                <input type="text" name="keyword" value="${keyword}" class="form-control"
+                                    placeholder="🔍 Tìm theo tên đăng nhập..." />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger text-center mt-3">${error}</div>
+                    </c:if>
+
+
+                    <div class="text-center mt-5">
+                        <div class="text-center mb-3">
+                            <h3>📋 Danh sách nhân viên bán hàng</h3>
+                        </div>
+                    </div>
                     <table class="table table-bordered table-hover text-center align-middle">
                         <thead class="table-light">
                             <tr>
@@ -45,13 +54,13 @@
                                 <tr>
                                     <td>${loop.index + 1}</td>
                                     <td>${e.username}</td>
-                                    <td>${e.role}</td>
+                                    <td>Nhân viên bán hàng</td>
                                     <td>${e.bookstore.name}</td>
                                     <td>*****</td>
                                     <td>
-                                        <a href="/admin/employee/edit/${e.id}" class="btn btn-sm btn-warning">Sửa</a>
+                                        <a href="/admin/employee/edit/${e.id}" class="btn btn-sm btn-warning">✏️ Sửa</a>
                                         <a href="/admin/employee/delete/${e.id}" class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
+                                            onclick="return confirm('Bạn chắc chắn muốn xóa?')">🗑️ Xóa</a>
                                     </td>
                                 </tr>
                             </c:forEach>

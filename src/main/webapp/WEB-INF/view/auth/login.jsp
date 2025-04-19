@@ -20,11 +20,11 @@
                         <div class="card-body">
                             <form:form method="post" action="/auth/login" modelAttribute="user">
                                 <div class="mb-3">
-                                    <label class="form-label">Tên đăng nhập:</label>
+                                    <label class="form-label">👤 Tên đăng nhập:</label>
                                     <form:input path="username" class="form-control" />
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Mật khẩu:</label>
+                                    <label class="form-label">🔒 Mật khẩu:</label>
                                     <form:password path="password" class="form-control" />
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
@@ -36,7 +36,7 @@
 
                             <hr>
                             <div class="text-center">
-                                <p>Bạn chưa có tài khoản? <a href="/auth/register">Đăng ký</a></p>
+                                <p>Bạn chưa có tài khoản? <a href="/auth/register">Tạo một nhà sách mới</a></p>
                             </div>
                         </div>
                     </div>

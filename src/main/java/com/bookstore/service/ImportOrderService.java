@@ -2,7 +2,7 @@ package com.bookstore.service;
 
 import com.bookstore.entity.*;
 import com.bookstore.repository.*;
-import com.bookstore.util.PdfExportUtil;
+import com.bookstore.util.ImportOrderPdfUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +89,6 @@ public class ImportOrderService {
     }
 
     public byte[] exportImportOrderToPDF(ImportOrder order, List<ImportOrderItem> items, double vat) {
-        return PdfExportUtil.exportImportOrderPDF(order, items, vat);
+        return ImportOrderPdfUtil.exportImportOrderPDF(order, items, vat);
     }
 }

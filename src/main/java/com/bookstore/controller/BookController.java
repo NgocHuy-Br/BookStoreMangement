@@ -21,24 +21,6 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    // @GetMapping("")
-    // public String listBooks(@RequestParam(required = false) String keyword,
-    // Model model,
-    // HttpSession session) {
-    // User currentUser = (User) session.getAttribute("loggedInUser");
-    // Bookstore bookstore = currentUser.getBookstore();
-
-    // List<Book> books;
-    // if (keyword != null && !keyword.isBlank()) {
-    // books = bookService.searchBooks(bookstore, keyword);
-    // } else {
-    // books = bookService.getBooksByBookstore(bookstore);
-    // }
-
-    // model.addAttribute("books", books);
-    // model.addAttribute("keyword", keyword);
-    // return "admin/book-list";
-    // }
     @GetMapping("")
     public String listBooks(@RequestParam(required = false) String keyword,
             @RequestParam(required = false) Integer top,
@@ -66,7 +48,7 @@ public class BookController {
         }
 
         model.addAttribute("books", books);
-        return "admin/book-list";
+        return "book/book-list";
     }
 
     @Autowired
@@ -87,7 +69,7 @@ public class BookController {
 
         model.addAttribute("book", book);
         model.addAttribute("categories", categories);
-        return "admin/book-create";
+        return "book/book-create";
     }
 
     @PostMapping("create")
@@ -109,7 +91,7 @@ public class BookController {
         List<Category> categories = categoryService.getCategoriesByBookstore(currentUser.getBookstore());
         model.addAttribute("categories", categories);
 
-        return "admin/book-edit";
+        return "book/book-edit";
     }
 
     @PostMapping("/edit/{id}")

@@ -15,22 +15,17 @@
 
                     <div class="container mt-5">
                         <div class="row justify-content-center">
-                            <div class="col-md-6 col-12">
-                                <h3 class="text-center mb-4">Thêm sách mới</h3>
+                            <div class="col-md-4 col-16">
+                                <h3 class="text-center mb-3">Thêm sách mới</h3>
                                 <form:form method="post" modelAttribute="book">
                                     <div class="mb-3">
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Danh mục:</label>
-                                            <div class="d-flex gap-2">
-                                                <a href="/category?returnUrl=/book/create"
-                                                    class="btn btn-sm btn-outline-primary">➕ Thêm danh mục</a>
-
-                                                <form:select path="category.id" class="form-select">
-                                                    <form:options items="${categories}" itemValue="id"
-                                                        itemLabel="name" />
-                                                </form:select>
-                                            </div>
+                                        <label class="form-label">Danh mục:</label>
+                                        <div class="d-flex justify-content-start gap-3 align-items-center mb-3">
+                                            <form:select path="category.id" class="form-select w-50">
+                                                <form:options items="${categories}" itemValue="id" itemLabel="name" />
+                                            </form:select>
+                                            <a href="/category?returnUrl=/book/create" class="btn btn-success">➕
+                                                Thêm danh mục</a>
                                         </div>
 
                                         <label class="form-label">Tên sách:</label>
@@ -50,11 +45,10 @@
                                         <form:input path="inventory" type="number" class="form-control"
                                             readonly="true" />
 
-
-
-
-                                        <button type="submit" class="btn btn-success">Lưu</button>
-                                        <a href="/admin/book" class="btn btn-secondary">Hủy</a>
+                                        <div class="d-flex justify-content-between mt-4">
+                                            <button type="submit" class="btn btn-success">💾 Tạo mới</button>
+                                            <a href="/book" class="btn btn-secondary">⬅️ Quay lại</a>
+                                        </div>
                                 </form:form>
                             </div>
                         </div>

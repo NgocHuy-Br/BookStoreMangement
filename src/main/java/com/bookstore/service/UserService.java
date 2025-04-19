@@ -7,10 +7,20 @@ import org.springframework.stereotype.Service;
 
 import com.bookstore.entity.Bookstore;
 import com.bookstore.entity.User;
+import com.bookstore.repository.ImportOrderRepository;
+import com.bookstore.repository.InvoiceRepository;
 import com.bookstore.repository.UserRepository;
 
 @Service
 public class UserService {
+    @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private InvoiceRepository invoiceRepo;
+
+    @Autowired
+    private ImportOrderRepository importOrderRepo;
 
     private final UserRepository userRepository;
 
@@ -30,9 +40,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Autowired
-    private UserRepository userRepo;
-
     public List<User> getAllEmployees() {
         return userRepo.findByRole("EMPLOYEE");
     }
@@ -46,8 +53,6 @@ public class UserService {
     }
 
     public void updateUserInfo(User employee) {
-        // Bạn có thể cập nhật các field cần thiết (không bao gồm password nếu không cập
-        // nhật)
         userRepo.save(employee);
     }
 
@@ -56,9 +61,6 @@ public class UserService {
 
     }
 
-    // public List<User> getEmployeesByBookstore(int bookstoreId) {
-    //     return userRepo.findByRoleAndBookstore_Id("EMPLOYEE", bookstoreId);
-    // }
     public List<User> getEmployeesByBookstore(Bookstore bookstore) {
         return userRepository.findByRoleAndBookstore("EMPLOYEE", bookstore);
     }
@@ -69,6 +71,16 @@ public class UserService {
 
     public boolean isUsernameExists(String username) {
         return userRepository.findByUsername(username).isPresent();
+    }
+
+    public boolean hasRelatedData(User user) {
+        return invoiceRepo.existsByUser(user) || importOrderRepo.existsByCreatedBy(user);
+    }
+
+    public boolean isUsernameTakenByAnotherUser(String username, Long currentUserId) {
+        return userRepository.findByUsername(username)
+                .filter(user -> !user.getId().equals(currentUserId))
+                .isPresent();
     }
 
 }

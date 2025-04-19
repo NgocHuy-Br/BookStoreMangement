@@ -31,6 +31,6 @@ public class AuthService {
         user.setRole("ADMIN");
         userRepository.save(user);
 
-        return "Đăng ký tài khoản Admin thành công!";
+        return "Đăng ký tài khoản thành công!";
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Controller
@@ -36,56 +38,49 @@ public class ManageEmployeeController {
         }
         model.addAttribute("employees", employees);
         model.addAttribute("keyword", keyword);
-        return "admin/employee-list";
+        return "employee/employee-list";
     }
-
-    // // Hiển thị form để thêm nhân viên mới
-    // @GetMapping("/add")
-    // public String showCreateForm(Model model, HttpSession session) {
-    // User currentUser = (User) session.getAttribute("loggedInUser");
-    // if (currentUser == null || !"ADMIN".equalsIgnoreCase(currentUser.getRole()))
-    // {
-    // return "redirect:/auth/login";
-    // }
-    // model.addAttribute("employee", new User());
-    // return "admin/employee-create";
-    // }
-
-    // // Xử lý tạo nhân viên mới (role mặc định là EMPLOYEE)
-    // @PostMapping("/add")
-    // public String createEmployee(@ModelAttribute("employee") User employee) {
-    // employee.setRole("EMPLOYEE");
-    // userService.save(employee);
-    // return "redirect:/admin/employee";
-    // }
 
     // Hiển thị form chỉnh sửa nhân viên
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         User employee = userService.getUserById(id);
         model.addAttribute("employee", employee);
-        return "admin/employee-edit";
+        return "employee/employee-edit";
     }
 
-    // Xử lý cập nhật thông tin nhân viên
     @PostMapping("/edit")
-    public String updateEmployee(@ModelAttribute("employee") User employee) {
-        // Không update role và bookstore
+    public String updateEmployee(@ModelAttribute("employee") User employee,
+            Model model) {
         User existingUser = userService.getUserById(employee.getId());
+
+        if (userService.isUsernameTakenByAnotherUser(employee.getUsername(), employee.getId())) {
+            model.addAttribute("error", "Tên đăng nhập đã tồn tại!");
+            model.addAttribute("employee", employee);
+            return "employee/employee-edit";
+        }
+
+        // Cập nhật thông tin trừ role & bookstore
         existingUser.setUsername(employee.getUsername());
         existingUser.setPassword(employee.getPassword());
-
         userService.saveEmployee(existingUser);
         return "redirect:/admin/employee";
     }
 
-    // Xác nhận và thực hiện xóa nhân viên
     @GetMapping("/delete/{id}")
-    public String deleteEmployee(@PathVariable Long id, HttpSession session) {
+    public String deleteEmployee(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         User currentUser = (User) session.getAttribute("loggedInUser");
         if (currentUser == null || !"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
             return "redirect:/auth/login";
         }
+
+        User employee = userService.getUserById(id);
+
+        if (userService.hasRelatedData(employee)) {
+            redirectAttributes.addFlashAttribute("error", "Không thể xóa nhân viên vì đã có dữ liệu liên quan!");
+            return "redirect:/admin/employee";
+        }
+
         userService.deleteUser(id);
         return "redirect:/admin/employee";
     }
@@ -93,34 +88,45 @@ public class ManageEmployeeController {
     @GetMapping("/create")
     public String showAddForm(Model model) {
         model.addAttribute("employee", new User());
-        return "admin/employee-create";
+        return "employee/employee-create";
     }
 
     // @PostMapping("/create")
     // public String addEmployee(@ModelAttribute("employee") User employee,
-    // HttpSession session) {
+    // HttpSession session, Model model) {
     // User admin = (User) session.getAttribute("loggedInUser");
+
+    // if (userService.isUsernameExists(employee.getUsername())) {
+    // model.addAttribute("error", "Tên đăng nhập đã tồn tại!");
+    // model.addAttribute("employee", employee);
+    // return "employee/employee-create";
+    // }
+
     // employee.setRole("EMPLOYEE");
     // employee.setBookstore(admin.getBookstore());
-
     // userService.saveEmployee(employee);
     // return "redirect:/admin/employee";
     // }
     @PostMapping("/create")
     public String addEmployee(@ModelAttribute("employee") User employee,
-            HttpSession session, Model model) {
+            HttpSession session,
+            Model model) {
         User admin = (User) session.getAttribute("loggedInUser");
 
         if (userService.isUsernameExists(employee.getUsername())) {
             model.addAttribute("error", "Tên đăng nhập đã tồn tại!");
             model.addAttribute("employee", employee);
-            return "admin/employee-create";
+            return "employee/employee-create";
         }
 
         employee.setRole("EMPLOYEE");
         employee.setBookstore(admin.getBookstore());
         userService.saveEmployee(employee);
-        return "redirect:/admin/employee";
+
+        // Truyền lại employee rỗng và thông báo
+        model.addAttribute("employee", new User());
+        model.addAttribute("success", "Tạo tài khoản nhân viên thành công!");
+        return "employee/employee-create";
     }
 
 }

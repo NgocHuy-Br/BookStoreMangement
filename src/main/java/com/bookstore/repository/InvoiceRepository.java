@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.bookstore.entity.Bookstore;
 import com.bookstore.entity.Invoice;
-import com.bookstore.entity.InvoiceItem;
+import com.bookstore.entity.User;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     List<Invoice> findByBookstore(Bookstore bookstore);
 
-    // List<InvoiceItem> findByInvoice(Invoice invoice);
+    boolean existsByUser(User user);
 
 }

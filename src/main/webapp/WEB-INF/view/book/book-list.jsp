@@ -23,19 +23,23 @@
             </head>
 
             <body>
-                <div class="container mt-5">
-                    <h3 class="text-center mb-4"><i class="bi bi-book"></i> Danh sách sách</h3>
+                <div class="container mt-3">
+                    <div class="text-center mb-3">
+                        <a href="${pageContext.request.contextPath}/book/create" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> ➕ Thêm sách mới
+                        </a>
+                    </div>
 
-                    <form class="row g-3 justify-content-center mb-3" method="get"
-                        action="${pageContext.request.contextPath}/book">
-                        <div class="col-auto">
-                            <input type="text" class="form-control" name="keyword"
-                                placeholder="Tìm theo tên sách, tác giả, danh mục..." value="${keyword}">
-                        </div>
-                        <div class="col-auto">
+                    <div class="d-flex justify-content-center mb-3">
+                        <form class="d-flex" method="get" action="${pageContext.request.contextPath}/book">
+                            <input type="text" class="form-control me-2" name="keyword" style="width: 400px;"
+                                placeholder="🔍 Tìm theo tên sách, tác giả, danh mục" value="${keyword}">
                             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+
+
+
 
                     <!-- Form Top bán chạy -->
                     <form method="get" class=" row mb-3" action="${pageContext.request.contextPath}/book">
@@ -46,6 +50,7 @@
                         </div>
                     </form>
 
+                    <h3 class="text-center mb-4"><i class="bi bi-book"></i>📋 Danh mục sách</h3>
                     <c:if test="${not empty sessionScope.bookDeleteError}">
                         <div class="alert alert-danger text-center">
                             ${sessionScope.bookDeleteError}
@@ -53,11 +58,7 @@
                         <c:remove var="bookDeleteError" scope="session" />
                     </c:if>
 
-                    <div class="text-end mb-3">
-                        <a href="${pageContext.request.contextPath}/book/create" class="btn btn-success">
-                            <i class="bi bi-plus-circle"></i> Thêm sách mới
-                        </a>
-                    </div>
+
 
                     <table class="table table-bordered table-hover">
                         <thead class="table-secondary">
@@ -67,10 +68,10 @@
                                 <th style="width: 12%;">Tác giả</th>
                                 <th style="width: 17%;">Danh mục</th>
                                 <th style="width: 12%;">Giá</th>
-                                <th style="width: 9%;">Tồn kho</th>
+                                <th style="width: 7%;">Tồn kho</th>
                                 <th style="width: 9%;">Đã bán ra</th>
 
-                                <th style="width: 12%;">Thao tác</th>
+                                <th style="width: 15%;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,10 +88,10 @@
                                     </td>
 
                                     <td>
-                                        <a href="/book/edit/${book.id}" class="btn btn-warning btn-sm">Sửa</a>
+                                        <a href="/book/edit/${book.id}" class="btn btn-warning btn-sm">✏️ Sửa</a>
                                         <a href="/book/delete/${book.id}"
                                             onclick="return confirm('Bạn có chắc chắn muốn xóa sách này?')"
-                                            class="btn btn-danger btn-sm">Xóa</a>
+                                            class="btn btn-danger btn-sm">🗑️ Xóa</a>
                                     </td>
                                 </tr>
                             </c:forEach>

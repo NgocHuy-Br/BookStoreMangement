@@ -1,18 +1,16 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-    <!-- Header chính -->
     <div
       style="background-color: #f8f9fa; border-bottom: 1px solid #ddd; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;">
-      <!-- Bên trái: logo và tiêu đề -->
+
       <a href="/admin/dashboard" style="font-size: 24px; font-weight: bold; color: #2c7be5; text-decoration: none;">
-        📚 Quản trị Nhà sách
+        📚 Nhà sách ${sessionScope.loggedInUser.bookstore.name}
       </a>
 
-      <!-- Bên phải: thông tin tài khoản -->
       <div style="text-align: right;">
-        <div style="font-size: 16px;">👋 Xin chào, <strong>${sessionScope.loggedInUser.username}</strong></div>
-        <div style="font-size: 14px;">Tài khoản:
+        <div style="font-size: 16px;">👋 Xin chào, ${sessionScope.loggedInUser.username}<strong></strong></div>
+        <div style="font-size: 14px;">Vai trò:
           <span style="font-weight: bold; color: #0d6efd;">${sessionScope.loggedInUser.role}</span>
         </div>
         <div style="margin-top: 5px;">

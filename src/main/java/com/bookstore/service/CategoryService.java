@@ -38,4 +38,13 @@ public class CategoryService {
         return bookRepository.existsByCategoryId(categoryId);
     }
 
+    public boolean isNameExists(String name, Bookstore bookstore) {
+        return categoryRepository.existsByNameAndBookstore(name, bookstore);
+    }
+
+    public boolean isNameTakenByOther(Long id, String name, Bookstore bookstore) {
+        Category existing = categoryRepository.findByNameAndBookstore(name, bookstore);
+        return existing != null && !existing.getId().equals(id);
+    }
+
 }

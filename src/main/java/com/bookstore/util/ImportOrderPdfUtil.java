@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class PdfExportUtil {
+public class ImportOrderPdfUtil {
 
     public static byte[] exportImportOrderPDF(ImportOrder order, List<ImportOrderItem> items, double vatRate) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
