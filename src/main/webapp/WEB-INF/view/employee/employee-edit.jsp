@@ -9,6 +9,14 @@
                     <title>Chỉnh sửa nhân viên</title>
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
                         rel="stylesheet">
+
+                    <style>
+                        input[readonly] {
+                            background-color: #f2f2f2;
+                            color: #555;
+                            border: 1px solid #ccc;
+                        }
+                    </style>
                 </head>
 
                 <body>

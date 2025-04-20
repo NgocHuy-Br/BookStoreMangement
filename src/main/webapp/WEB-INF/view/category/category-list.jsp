@@ -25,7 +25,13 @@
                                 margin-bottom: 20px;
                             }
                         </style>
-
+                        <style>
+                            input[readonly] {
+                                background-color: #f2f2f2;
+                                color: #555;
+                                border: 1px solid #ccc;
+                            }
+                        </style>
                     </head>
 
                     <body>

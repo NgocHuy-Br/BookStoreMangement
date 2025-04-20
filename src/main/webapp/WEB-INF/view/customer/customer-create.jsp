@@ -7,6 +7,13 @@
             <head>
                 <title>Thêm khách hàng</title>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+                <style>
+                    input[readonly] {
+                        background-color: #f2f2f2;
+                        color: #555;
+                        border: 1px solid #ccc;
+                    }
+                </style>
             </head>
 
             <body>

@@ -14,3 +14,14 @@ body {
 #main-content {
     flex: 1;
 }
+
+input[readonly] {
+    background-color: #f2f2f248;
+    /* nền xám nhạt */
+    color: #555;
+    /* chữ xám đậm hơn */
+    font-style: italic;
+    /* chữ nghiêng để nhấn mạnh */
+    border: 1px solid #ccc;
+    /* viền nhẹ */
+}
