@@ -1,25 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-    <%@ page session="true" %>
+<%@ include file="/WEB-INF/view/common/dashboard-header.jsp" %>
+    <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+        <div style="padding: 40px; text-align: center;">
+            <h2 style="color: green;">Chào mừng đến với hệ thống quản trị Nhà sách!</h2>
+            <p>Hãy chọn một chức năng từ thanh menu để bắt đầu</p>
 
-        <!DOCTYPE html>
-        <html lang="vi">
-
-        <head>
-            <meta charset="UTF-8">
-            <title>Dashboard Nhân viên</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        </head>
-
-        <body>
-
-            <div class="container mt-5">
-                <div class="alert alert-info">
-                    <h4>Chào mừng nhân viên <strong>${sessionScope.loggedInUser.username}</strong>!</h4>
-                    <p>Bạn đã đăng nhập thành công vào hệ thống quản lý nhà sách.</p>
-                </div>
-                <a href="/auth/logout" class="btn btn-danger">Đăng xuất</a>
-            </div>
-
-        </body>
-
-        </html>
+            <%@ include file="/WEB-INF/view/common/dashboard-footer.jsp" %>
+        </div>

@@ -67,11 +67,13 @@
 
                         <h3 class="row justify-content-center">📋 Danh sách nhập hàng</h3>
 
-                        <div class="text-end total-section mb-1">
-                            Tổng giá trị nhập hàng (sau VAT):
-                            <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
-                                groupingUsed="true" maxFractionDigits="0" /> đ
-                        </div>
+                        <c:if test="${sessionScope.loggedInUser.role == 'ADMIN'}">
+                            <div class="text-end total-section mb-1">
+                                Tổng giá trị nhập hàng (sau VAT):
+                                <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
+                                    groupingUsed="true" maxFractionDigits="0" /> đ
+                            </div>
+                        </c:if>
 
                         <table class="table table-bordered table-hover">
                             <thead class="table-secondary">

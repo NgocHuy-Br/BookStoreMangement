@@ -26,6 +26,7 @@ public class BookController {
 
     @Autowired
     private CategoryService categoryService;
+    
 
     @GetMapping("")
     public String listBooks(@RequestParam(required = false) String keyword,

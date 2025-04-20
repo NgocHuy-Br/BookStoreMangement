@@ -73,13 +73,15 @@
                                 groupingUsed="true" maxFractionDigits="0" /> đ
                         </div>
 
-                        <div class="text-end total-section mt-1 mb-2">
-                            Tổng lợi nhuận:
-                            <fmt:formatNumber value="${totalProfit}" type="currency" currencySymbol=""
-                                groupingUsed="true" maxFractionDigits="0" /> đ
-                        </div>
+                        <c:if test="${sessionScope.loggedInUser.role == 'ADMIN'}">
+                            <div class="text-end total-section mt-1 mb-2">
+                                Tổng lợi nhuận:
+                                <fmt:formatNumber value="${totalProfit}" type="currency" currencySymbol=""
+                                    groupingUsed="true" maxFractionDigits="0" /> đ
+                            </div>
+                        </c:if>
 
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered table-hover mt-1">
                             <thead class="table-secondary">
                                 <tr>
                                     <th style="width: 5%;">STT</th>
@@ -88,7 +90,11 @@
                                     <th style="width: 17%;">Thời gian tạo</th>
                                     <th style="width: 12%;">Người tạo</th>
                                     <th style="width: 12%;">Doanh thu (sau VAT)</th>
-                                    <th style="width: 12%;">Lợi nhuận</th>
+
+                                    <c:if test="${sessionScope.loggedInUser.role == 'ADMIN'}">
+                                        <th style="width: 12%;">Lợi nhuận</th>
+                                    </c:if>
+
                                     <th style="width: 15%;">Xem đơn hàng</th>
                                 </tr>
                             </thead>
@@ -109,11 +115,12 @@
                                                 currencySymbol="" groupingUsed="true" maxFractionDigits="0" />
                                         </td>
 
-                                        <td>
-                                            <fmt:formatNumber value="${inv.profit}" type="currency" currencySymbol=""
-                                                groupingUsed="true" maxFractionDigits="0" />
-                                        </td>
-
+                                        <c:if test="${sessionScope.loggedInUser.role == 'ADMIN'}">
+                                            <td>
+                                                <fmt:formatNumber value="${inv.profit}" type="currency"
+                                                    currencySymbol="" groupingUsed="true" maxFractionDigits="0" />
+                                            </td>
+                                        </c:if>
 
                                         <td>
                                             <a href="${pageContext.request.contextPath}/invoice/pdf/${inv.id}"

@@ -1,23 +1,29 @@
 package com.bookstore.config;
 
-import org.springframework.context.annotation.Bean;
+import com.bookstore.interceptor.LoginInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.lang.NonNull;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private LoginInterceptor loginInterceptor;
+
     @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
+    public void configureViewResolvers(@NonNull ViewResolverRegistry registry) {
         registry.jsp("/WEB-INF/view/", ".jsp");
     }
 
-    // @Bean
-    // public InternalResourceViewResolver viewResolver() {
-    // InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-    // resolver.setPrefix("/WEB-INF/view/");
-    // resolver.setSuffix(".jsp");
-    // return resolver;
-    // }
+    @Override
+    public void addInterceptors(@NonNull InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/auth/**",
+                        "/unauthorized",
+                        "/css/**", "/js/**", "/images/**", "/fonts/**", "/favicon.ico");
+    }
 }

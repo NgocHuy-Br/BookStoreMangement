@@ -64,21 +64,29 @@
                                     action="/customer/setting/save">
                                     <form:hidden path="id" />
 
+                                    <!-- Input: Giảm giá -->
                                     <div class="row justify-content-center mb-3">
-                                        <label class="col-sm-5 col-form-label text-end fw-bold">Phần trăm giảm giá cho
-                                            thành viên (%):</label>
+                                        <label class="col-sm-5 col-form-label text-end fw-bold">
+                                            Phần trăm giảm giá cho thành viên (%):
+                                        </label>
+
                                         <div class="col-sm-2">
                                             <form:input path="discountRate" type="number" step="0.1" min="0"
-                                                class="form-control text-center" />
+                                                class="form-control text-center"
+                                                readonly="${sessionScope.loggedInUser.role == 'EMPLOYEE'}" />
                                         </div>
                                     </div>
 
+                                    <!-- Input: Số điểm để là thành viên -->
                                     <div class="row justify-content-center">
-                                        <label class="col-sm-5 col-form-label text-end fw-bold">Số điểm để
-                                            là thành viên (1,000đ tương đương 1 điểm):</label>
+                                        <label class="col-sm-5 col-form-label text-end fw-bold">
+                                            Số điểm để là thành viên (1,000đ tương đương 1 điểm):
+                                        </label>
+
                                         <div class="col-sm-2">
                                             <form:input path="requiredPointsForMembership" type="number" step="1"
-                                                min="1" class="form-control text-center" />
+                                                min="1" class="form-control text-center"
+                                                readonly="${sessionScope.loggedInUser.role == 'EMPLOYEE'}" />
                                         </div>
                                     </div>
 
