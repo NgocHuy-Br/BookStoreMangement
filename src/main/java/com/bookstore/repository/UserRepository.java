@@ -21,6 +21,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Tìm kiếm theo username (không phân biệt hoa thường) và có role nhất định
     List<User> findByUsernameContainingIgnoreCaseAndRole(String username, String role);
 
+    List<User> findByUsernameContainingIgnoreCaseAndRoleAndBookstore(String username, String role, Bookstore bookstore);
+
     List<User> findByRoleAndBookstore_Id(String role, int bookstoreId);
 
     List<User> findByRoleAndBookstore(String role, Bookstore bookstore);

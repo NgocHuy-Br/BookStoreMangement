@@ -31,11 +31,11 @@ public class ManageEmployeeController {
 
         List<User> employees;
         if (keyword != null && !keyword.isEmpty()) {
-            employees = userService.searchEmployeesByUsername(keyword);
+            employees = userService.searchEmployeesByUsernameAndBookstore(keyword, currentUser.getBookstore());
         } else {
-            // employees = userService.getAllEmployees();
             employees = userService.getEmployeesByBookstore(currentUser.getBookstore());
         }
+
         model.addAttribute("employees", employees);
         model.addAttribute("keyword", keyword);
         return "employee/employee-list";

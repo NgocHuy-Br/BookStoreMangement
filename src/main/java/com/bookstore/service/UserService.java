@@ -44,8 +44,13 @@ public class UserService {
         return userRepo.findByRole("EMPLOYEE");
     }
 
-    public List<User> searchEmployeesByUsername(String keyword) {
-        return userRepo.findByUsernameContainingIgnoreCaseAndRole(keyword, "EMPLOYEE");
+    // public List<User> searchEmployeesByUsername(String keyword) {
+    // return userRepo.findByUsernameContainingIgnoreCaseAndRole(keyword,
+    // "EMPLOYEE");
+    // }
+
+    public List<User> searchEmployeesByUsernameAndBookstore(String keyword, Bookstore bookstore) {
+        return userRepository.findByUsernameContainingIgnoreCaseAndRoleAndBookstore(keyword, "EMPLOYEE", bookstore);
     }
 
     public User getUserById(Long id) {
