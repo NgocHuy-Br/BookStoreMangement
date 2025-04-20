@@ -65,7 +65,19 @@
                             </div>
                         </form>
 
-                        <h3 class="row justify-content-center">📋 Danh sách bán hàng</h3>
+                        <h3 class="row justify-content-center mb-1">📋 Danh sách bán hàng</h3>
+
+                        <div class="text-end total-section mt-1">
+                            Tổng doanh thu (sau VAT):
+                            <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
+                                groupingUsed="true" maxFractionDigits="0" /> đ
+                        </div>
+
+                        <div class="text-end total-section mt-1 mb-2">
+                            Tổng lợi nhuận:
+                            <fmt:formatNumber value="${totalProfit}" type="currency" currencySymbol=""
+                                groupingUsed="true" maxFractionDigits="0" /> đ
+                        </div>
 
                         <table class="table table-bordered table-hover">
                             <thead class="table-secondary">
@@ -75,7 +87,7 @@
                                     <th style="width: 12%;">Khách hàng</th>
                                     <th style="width: 17%;">Thời gian tạo</th>
                                     <th style="width: 12%;">Người tạo</th>
-                                    <th style="width: 12%;">Doanh thu</th>
+                                    <th style="width: 12%;">Doanh thu (sau VAT)</th>
                                     <th style="width: 12%;">Lợi nhuận</th>
                                     <th style="width: 15%;">Xem đơn hàng</th>
                                 </tr>
@@ -111,12 +123,6 @@
                                 </c:forEach>
                             </tbody>
                         </table>
-
-                        <div class="text-end total-section">
-                            Tổng cộng:
-                            <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
-                                groupingUsed="true" maxFractionDigits="0" /> đ
-                        </div>
                     </div>
                 </body>
 

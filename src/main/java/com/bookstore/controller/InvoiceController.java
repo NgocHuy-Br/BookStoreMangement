@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.OutputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +54,10 @@ public class InvoiceController {
 
         List<Invoice> invoices = invoiceService.filterInvoices(bookstore, customerName, from, to);
         double totalValue = invoiceService.calculateTotal(invoices);
+        // Tính tổng lợi nhuận từ các hóa đơn đang hiển thị
+        double totalProfit = invoices.stream()
+                .mapToDouble(Invoice::getProfit)
+                .sum();
 
         // Tính totalAfterVAT của từng invoice và bỏ vào Map
         Map<Long, Double> invoiceTotals = new HashMap<>();
@@ -66,6 +69,7 @@ public class InvoiceController {
         model.addAttribute("invoices", invoices);
         model.addAttribute("invoiceTotals", invoiceTotals);
         model.addAttribute("totalValue", totalValue);
+        model.addAttribute("totalProfit", totalProfit);
         model.addAttribute("customer", customerName);
         model.addAttribute("from", from);
         model.addAttribute("to", to);

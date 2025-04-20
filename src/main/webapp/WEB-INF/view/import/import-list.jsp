@@ -67,6 +67,12 @@
 
                         <h3 class="row justify-content-center">📋 Danh sách nhập hàng</h3>
 
+                        <div class="text-end total-section mb-1">
+                            Tổng giá trị nhập hàng (sau VAT):
+                            <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
+                                groupingUsed="true" maxFractionDigits="0" /> đ
+                        </div>
+
                         <table class="table table-bordered table-hover">
                             <thead class="table-secondary">
                                 <tr>
@@ -75,7 +81,7 @@
                                     <th style="width: 20%;">Nhà cung cấp</th>
                                     <th style="width: 20%;">Thời gian tạo</th>
                                     <th style="width: 15%;">Người tạo</th>
-                                    <th style="width: 15%;">Tổng thành tiền</th>
+                                    <th style="width: 15%;">Tổng thành tiền (sau VAT)</th>
                                     <th style="width: 25%;">Xem đơn hàng</th>
                                 </tr>
                             </thead>
@@ -105,12 +111,6 @@
                             </tbody>
                         </table>
 
-                        <div class="text-end total-section">
-                            Tổng cộng:
-                            <fmt:formatNumber value="${totalValue}" type="currency" currencySymbol=""
-                                groupingUsed="true" maxFractionDigits="0" /> đ
-
-                        </div>
                     </div>
                 </body>
 

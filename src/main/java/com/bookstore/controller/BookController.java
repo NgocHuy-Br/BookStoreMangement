@@ -84,11 +84,17 @@ public class BookController {
     }
 
     @PostMapping("create")
-    public String createBook(@ModelAttribute("book") Book book, HttpSession session) {
+    public String createBook(@ModelAttribute("book") Book book, HttpSession session, Model model) {
         User user = (User) session.getAttribute("loggedInUser");
         book.setBookstore(user.getBookstore());
         bookService.save(book);
-        return "redirect:/book";
+
+        // Gán lại model để ở lại trang
+        List<Category> categories = categoryService.getCategoriesByBookstore(user.getBookstore());
+        model.addAttribute("book", new Book()); // reset form
+        model.addAttribute("categories", categories);
+        model.addAttribute("bookMessage", "Thêm sách mới thành công !");
+        return "book/book-create";
     }
 
     @GetMapping("/edit/{id}")
@@ -110,23 +116,21 @@ public class BookController {
         User user = (User) session.getAttribute("loggedInUser");
         book.setBookstore(user.getBookstore());
         bookService.save(book);
+        session.setAttribute("bookMessage", "Cập nhật sách thành công !");
         return "redirect:/book";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteBook(@PathVariable Long id, HttpSession session, Model model) {
         User currentUser = (User) session.getAttribute("loggedInUser");
-        if (currentUser == null) {
-            return "redirect:/auth/login";
-        }
 
         Book book = bookService.getById(id);
         if (book != null && book.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
             if (bookService.isBookUsedInImportOrder(id)) {
-                // Nếu đã tồn tại trong đơn hàng thì không xóa, gắn thông báo lỗi
-                session.setAttribute("bookDeleteError", "Sách đã nằm trong đơn hàng. Xóa không thành công!");
+                session.setAttribute("bookMessage", "Sách đã nằm trong đơn hàng. Xóa không thành công !");
             } else {
                 bookService.deleteById(id);
+                session.setAttribute("bookMessage", "Xóa sách thành công!");
             }
         }
         return "redirect:/book";

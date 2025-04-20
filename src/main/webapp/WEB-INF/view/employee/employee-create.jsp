@@ -59,7 +59,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">⚙️ Vai trò:</label>
-                                        <input type="text" class="form-control" value="Nhân viên bán hàng" readonly />
+                                        <input type="text" class="form-control" value="Nhân viên cửa hàng" readonly />
                                         <form:hidden path="role" value="EMPLOYEE" />
                                     </div>
 

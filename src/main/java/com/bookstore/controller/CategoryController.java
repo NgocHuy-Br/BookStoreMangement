@@ -57,13 +57,13 @@ public class CategoryController {
         // Kiểm tra tên đã tồn tại
         if (categoryService.isNameExists(category.getName(),
                 currentUser.getBookstore())) {
-            redirectAttributes.addFlashAttribute("error", "Tên danh mục đã tồn tại!");
+            redirectAttributes.addFlashAttribute("error", "Tên danh mục đã tồn tại !");
             return "redirect:/category" + (returnUrl != null ? "?returnUrl=" + returnUrl
                     : "");
         }
 
         categoryService.saveCategory(category);
-        redirectAttributes.addFlashAttribute("success", "Tạo danh mục thành công!");
+        redirectAttributes.addFlashAttribute("success", "Tạo danh mục thành công !");
         return "redirect:/category" + (returnUrl != null ? "?returnUrl=" + returnUrl
                 : "");
     }
@@ -78,10 +78,10 @@ public class CategoryController {
 
         if (category != null && category.getBookstore().getId().equals(currentUser.getBookstore().getId())) {
             if (categoryService.isCategoryUsed(id)) {
-                redirectAttributes.addFlashAttribute("error", "Có sách nằm trong danh mục này, không cho phép xóa!");
+                redirectAttributes.addFlashAttribute("error", "Có sách nằm trong danh mục này, không cho phép xóa !");
             } else {
                 categoryService.deleteById(id);
-                redirectAttributes.addFlashAttribute("success", "Xóa danh mục thành công.");
+                redirectAttributes.addFlashAttribute("success", "Xóa danh mục thành công !");
             }
         }
 

@@ -34,12 +34,14 @@
                         .alert-container {
                             display: flex;
                             justify-content: center;
+                            margin-top: 20px;
                             margin-bottom: 20px;
                         }
                     </style>
                 </head>
 
                 <body>
+
                     <div class="container mt-5">
                         <div class="text-center mb-3">
                             <a href="${pageContext.request.contextPath}/book/create" class="btn btn-success">
@@ -54,10 +56,6 @@
                                 <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                             </form>
                         </div>
-
-
-
-
                         <!-- Form Top bán chạy -->
                         <form method="get" class=" row mb-3" action="${pageContext.request.contextPath}/book">
                             <div class="text-center mb-1">
@@ -73,16 +71,16 @@
                             </div>
                         </form>
 
-
                         <h3 class="text-center mb-4"><i class="bi bi-book"></i>📋 Danh mục sách</h3>
-                        <c:if test="${not empty sessionScope.bookDeleteError}">
-                            <div class="alert alert-danger text-center">
-                                ${sessionScope.bookDeleteError}
+
+                        <c:if test="${not empty sessionScope.bookMessage}">
+                            <div class="alert-container">
+                                <div class="alert alert-success custom-alert">
+                                    ${sessionScope.bookMessage}
+                                </div>
                             </div>
-                            <c:remove var="bookDeleteError" scope="session" />
+                            <c:remove var="bookMessage" scope="session" />
                         </c:if>
-
-
 
                         <table class="table table-bordered table-hover">
                             <thead class="table-secondary">

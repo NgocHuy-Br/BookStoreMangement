@@ -52,6 +52,15 @@
                             <h3>📋 Danh sách nhân viên bán hàng</h3>
                         </div>
                     </div>
+
+                    <c:if test="${not empty message}">
+                        <div class="alert-container">
+                            <div class="alert alert-success custom-alert">
+                                ${message}
+                            </div>
+                        </div>
+                    </c:if>
+
                     <table class="table table-bordered table-hover text-center align-middle">
                         <thead class="table-light">
                             <tr>
@@ -68,7 +77,7 @@
                                 <tr>
                                     <td>${loop.index + 1}</td>
                                     <td>${e.username}</td>
-                                    <td>Nhân viên bán hàng</td>
+                                    <td>Nhân viên cửa hàng</td>
                                     <td>${e.bookstore.name}</td>
                                     <td>*****</td>
                                     <td>

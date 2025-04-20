@@ -49,15 +49,6 @@ public class ImportOrderController {
         List<ImportOrder> orders = importOrderService.filterOrders(bookstore, supplierName, from, to);
         double total = importOrderService.calculateTotalWithVAT(orders);
 
-        // Gán tổng tiền cho từng đơn để hiển thị trong giao diện
-        // for (ImportOrder order : orders) {
-        // List<ImportOrderItem> items = importItemRepo.findByImportOrder(order);
-        // double sum = items.stream()
-        // .mapToDouble(item -> item.getUnitPrice() * item.getQuantity())
-        // .sum();
-        // order.setTotalAmount(sum); // Gán vào trường totalAmount đã có sẵn
-        // }
-
         model.addAttribute("orders", orders);
         model.addAttribute("totalValue", total);
         model.addAttribute("supplier", supplierName);
@@ -126,8 +117,9 @@ public class ImportOrderController {
 
         List<ImportOrderItem> items = importItemRepo.findByImportOrder(order);
 
-        double vat = order.getVatRate(); // Lấy trực tiếp từ entity
-
+        // double vat = order.getVatRate();
+        double vat = order.getVatRate() != null ? order.getVatRate() : 0.0;// Lấy trực tiếp từ entity
+        
         byte[] pdfBytes = importOrderService.exportImportOrderToPDF(order, items, vat);
 
         try {

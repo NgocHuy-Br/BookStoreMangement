@@ -9,14 +9,37 @@
                     <title>Thêm sách mới</title>
                     <link rel="stylesheet"
                         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+                    <style>
+                        .custom-alert {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            border-radius: 6px;
+                            font-weight: 500;
+                        }
+
+                        .alert-container {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        }
+                    </style>
                 </head>
 
                 <body>
-
                     <div class="container mt-5">
                         <div class="row justify-content-center">
                             <div class="col-md-5 col-16">
                                 <h3 class="text-center mb-3">Thêm sách mới</h3>
+
+                                <c:if test="${not empty bookMessage}">
+                                    <div class="alert-container">
+                                        <div class="alert alert-success custom-alert">
+                                            ${bookMessage}
+                                        </div>
+                                    </div>
+                                </c:if>
+
                                 <form:form method="post" modelAttribute="book">
                                     <div class="mb-3">
                                         <label class="form-label">Danh mục:</label>
@@ -37,7 +60,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Giá:</label>
-                                        <form:input path="price" type="number" min="1" class="form-control"
+                                        <form:input path="price" type="number" min="1" step="1" class="form-control"
                                             required="required" />
 
                                     </div>

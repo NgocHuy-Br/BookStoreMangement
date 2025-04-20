@@ -4,11 +4,7 @@ import com.bookstore.entity.Supplier;
 import com.bookstore.entity.User;
 import com.bookstore.repository.SupplierRepository;
 import com.bookstore.service.ImportOrderService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,20 +46,20 @@ public class SupplierController {
                 currentUser.getBookstore());
 
         if (isDuplicate) {
-            model.addAttribute("error", "Tên nhà cung cấp đã tồn tại!");
+            model.addAttribute("error", "Tên nhà cung cấp đã tồn tại !");
             model.addAttribute("returnUrl", returnUrl);
             return "/supplier/supplier-create";
         }
 
         supplierRepository.save(supplier);
 
-        // Làm sạch returnUrl nếu bị lỗi như "/import,/import"
+        // Làm sạch returnUrl ở bị lỗi như "/import,/import"
         if (returnUrl != null && returnUrl.contains(",")) {
             returnUrl = returnUrl.split(",")[0];
         }
 
         // Thêm thông báo thành công vào redirect
-        redirectAttributes.addFlashAttribute("success", "Thêm nhà cung cấp thành công!");
+        redirectAttributes.addFlashAttribute("success", "Thêm nhà cung cấp thành công !");
 
         return "redirect:" + (returnUrl != null ? returnUrl : "/import/create") + "/create";
     }

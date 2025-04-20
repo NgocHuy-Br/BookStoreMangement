@@ -9,6 +9,22 @@
                 <meta charset="UTF-8">
                 <title>Đăng nhập</title>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+                <style>
+                    .custom-alert {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        border-radius: 6px;
+                        font-weight: 500;
+                    }
+
+                    .alert-container {
+                        display: flex;
+                        justify-content: center;
+                        margin-top: 20px;
+                        margin-bottom: 20px;
+                    }
+                </style>
             </head>
 
             <body>
@@ -31,7 +47,12 @@
                             </form:form>
 
                             <c:if test="${not empty message}">
-                                <div class="alert alert-danger mt-3">${message}</div>
+                                <div class="alert-container">
+                                    <div class="alert alert-info custom-alert">
+                                        ${message}
+                                    </div>
+                                </div>
+                                <c:remove var="bookMessage" scope="session" />
                             </c:if>
 
                             <hr>
