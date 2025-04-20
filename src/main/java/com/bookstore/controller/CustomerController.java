@@ -64,12 +64,12 @@ public class CustomerController {
         // Tìm lại cấu hình hiện có để lấy ID cũ
         CustomerSetting existingSetting = customerService.getOrCreateSetting(bookstore);
         setting.setId(existingSetting.getId());
-        setting.setBookstore(bookstore); // ✅ phải gán lại vì form không gửi bookstore
+        setting.setBookstore(bookstore); // phải gán lại vì form không gửi bookstore
 
         // Lưu
         customerService.updateSetting(setting);
 
-        model.addAttribute("message", "Cập nhật cấu hình thành công.");
+        model.addAttribute("message", "Cập nhật cài đặt thành công");
         List<Customer> customers = customerService.getCustomersByBookstore(bookstore);
 
         model.addAttribute("customerSetting", setting);
@@ -84,9 +84,9 @@ public class CustomerController {
         Customer customer = customerService.getCustomerById(id);
         if (customer != null && customerService.canDeleteCustomer(customer)) {
             customerService.deleteCustomer(customer);
-            session.setAttribute("customerMessage", "Xóa khách hàng thành công.");
+            session.setAttribute("customerMessage", "Xóa khách hàng thành công");
         } else {
-            session.setAttribute("customerMessage", "Không xóa được vì khách hàng đã có mua hàng trước đó.");
+            session.setAttribute("customerMessage", "Không xóa được vì khách hàng đã có mua hàng trước đó");
         }
         return "redirect:/customer";
     }

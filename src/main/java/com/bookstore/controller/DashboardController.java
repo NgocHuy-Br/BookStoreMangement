@@ -32,7 +32,7 @@ public class DashboardController {
 
         User user = (User) userObj;
         if ("EMPLOYEE".equalsIgnoreCase(user.getRole())) {
-            return "dashboard/dashboard-employee";
+            return "dashboard/dashboard-admin";
         } else {
             return "redirect:/auth/login";
         }

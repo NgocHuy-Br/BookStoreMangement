@@ -84,6 +84,20 @@ public class InvoiceService {
         customer.setLoyaltyPoints(customer.getLoyaltyPoints() + loyaltyPoints);
         customerRepo.save(customer);
 
+        double totalCost = 0;
+        for (int i = 0; i < bookIds.size(); i++) {
+            Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
+            // double avgImportPrice = book.getAverageImportPrice();
+            double avgImportPrice = book.getAverageImportPrice() != null ? book.getAverageImportPrice() : 0.0;
+
+            int qty = quantities.get(i);
+            totalCost += avgImportPrice * qty;
+        }
+        double profit = totalAfterVAT - (totalCost * (1 + vat / 100));
+        invoice.setProfit(profit);
+
+        invoiceRepo.save(invoice);
+
         return invoice;
     }
 

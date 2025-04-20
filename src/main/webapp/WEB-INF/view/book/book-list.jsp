@@ -60,13 +60,19 @@
 
                         <!-- Form Top bán chạy -->
                         <form method="get" class=" row mb-3" action="${pageContext.request.contextPath}/book">
-                            <div class="text-center mb-4">
+                            <div class="text-center mb-1">
                                 <a href="${pageContext.request.contextPath}/book?top=10"
                                     class="btn btn-outline-primary">
                                     📈 Thống kê top 10 sách bán chạy
                                 </a>
                             </div>
+                            <div class="text-center mb-1">
+                                <a href="/book/inventory-asc" class="btn btn-outline-primary mt-2">
+                                    🗂️ Lọc sách theo tồn kho tăng dần
+                                </a>
+                            </div>
                         </form>
+
 
                         <h3 class="text-center mb-4"><i class="bi bi-book"></i>📋 Danh mục sách</h3>
                         <c:if test="${not empty sessionScope.bookDeleteError}">
@@ -82,14 +88,15 @@
                             <thead class="table-secondary">
                                 <tr>
                                     <th style="width: 5%;">STT</th>
-                                    <th style="width: 24%;">Tên sách</th>
-                                    <th style="width: 10%;">Tác giả</th>
-                                    <th style="width: 17%;">Danh mục</th>
-                                    <th style="width: 12%;">Giá</th>
-                                    <th style="width: 9%;">Tồn kho</th>
-                                    <th style="width: 9%;">Đã bán ra</th>
+                                    <th style="width: 20%;">Tên sách</th>
+                                    <th style="width: 8%;">Tác giả</th>
+                                    <th style="width: 15%;">Danh mục</th>
+                                    <th style="width: 10%;">Giá nhập trung bình</th>
+                                    <th style="width: 10%;">Giá bán ra</th>
+                                    <th style="width: 8%;">Tồn kho</th>
+                                    <th style="width: 8%;">Đã bán ra</th>
 
-                                    <th style="width: 17%;">Thao tác</th>
+                                    <th style="width: 18%;">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -99,7 +106,9 @@
                                         <td>${book.title}</td>
                                         <td>${book.author}</td>
                                         <td>${book.category.name}</td>
-                                        <!-- <td>${book.price}</td> -->
+                                        <td>
+                                            <fmt:formatNumber value="${book.averageImportPrice}" pattern="#,##0" />
+                                        </td>
                                         <td>
                                             <fmt:formatNumber value="${book.price}" type="currency" currencySymbol=""
                                                 maxFractionDigits="0" />

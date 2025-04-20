@@ -19,6 +19,8 @@ public class ImportOrder {
 
     private LocalDateTime createdAt;
 
+    private Double vatRate = 0.0;
+
     private Double totalAmount = 0.0;
 
     @ManyToOne
@@ -73,6 +75,14 @@ public class ImportOrder {
 
     public void setBookstore(Bookstore bookstore) {
         this.bookstore = bookstore;
+    }
+
+    public Double getVatRate() {
+        return vatRate;
+    }
+
+    public void setVatRate(Double vatRate) {
+        this.vatRate = vatRate;
     }
 
     public Double getTotalAmount() {

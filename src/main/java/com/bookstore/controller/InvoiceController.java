@@ -132,11 +132,6 @@ public class InvoiceController {
             return;
 
         List<InvoiceItem> items = invoiceItemRepo.findByInvoice(invoice);
-        // Object vatObj = session.getAttribute("vat_invoice_" + id);
-        // double vat = 0.0;
-        // if (vatObj != null) {
-        // vat = (double) vatObj;
-        // }
         double vat = invoice.getVatRate();
 
         byte[] pdfBytes = invoiceService.exportInvoiceToPDF(invoice, items, vat);

@@ -50,9 +50,12 @@
                         <h3 class="text-center mb-4"><i class="bi bi-bullseye"></i> Thiết lập giảm giá cho
                             khách hàng thành viên</h3>
 
-                        <!-- Thông báo thành công -->
                         <c:if test="${not empty message}">
-                            <div class="alert alert-info text-center">${message}</div>
+                            <div class="alert-container">
+                                <div class="alert alert-success custom-alert">
+                                    ${message}
+                                </div>
+                            </div>
                         </c:if>
 
                         <div class="row justify-content-center mb-4">
@@ -62,20 +65,20 @@
                                     <form:hidden path="id" />
 
                                     <div class="row justify-content-center mb-3">
-                                        <label class="col-sm-4 col-form-label text-end fw-bold">Phần trăm giảm giá cho
+                                        <label class="col-sm-5 col-form-label text-end fw-bold">Phần trăm giảm giá cho
                                             thành viên (%):</label>
-                                        <div class="col-sm-1">
-                                            <form:input path="discountRate" type="number" step="0.1"
+                                        <div class="col-sm-2">
+                                            <form:input path="discountRate" type="number" step="0.1" min="0"
                                                 class="form-control text-center" />
                                         </div>
                                     </div>
 
-                                    <div class="row justify-content-center mb-3">
-                                        <label class="col-sm-4 col-form-label text-end fw-bold">Số điểm tích lũy để trở
-                                            thành thành viên:</label>
-                                        <div class="col-sm-1">
+                                    <div class="row justify-content-center">
+                                        <label class="col-sm-5 col-form-label text-end fw-bold">Số điểm để
+                                            là thành viên (1,000đ tương đương 1 điểm):</label>
+                                        <div class="col-sm-2">
                                             <form:input path="requiredPointsForMembership" type="number" step="1"
-                                                class="form-control text-center" />
+                                                min="1" class="form-control text-center" />
                                         </div>
                                     </div>
 
@@ -93,7 +96,11 @@
                         </h3>
 
                         <c:if test="${not empty customerMessage}">
-                            <div class="alert alert-info text-center">${customerMessage}</div>
+                            <div class="alert-container">
+                                <div class="alert alert-info custom-alert">
+                                    ${customerMessage}
+                                </div>
+                            </div>
                         </c:if>
 
                         <!-- Form tìm kiếm và nút thêm khách hàng -->

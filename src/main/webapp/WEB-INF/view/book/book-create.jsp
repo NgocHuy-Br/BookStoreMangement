@@ -15,7 +15,7 @@
 
                     <div class="container mt-5">
                         <div class="row justify-content-center">
-                            <div class="col-md-4 col-16">
+                            <div class="col-md-5 col-16">
                                 <h3 class="text-center mb-3">Thêm sách mới</h3>
                                 <form:form method="post" modelAttribute="book">
                                     <div class="mb-3">
@@ -37,7 +37,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Giá:</label>
-                                        <form:input path="price" type="number" step="100" class="form-control"
+                                        <form:input path="price" type="number" min="1" class="form-control"
                                             required="required" />
 
                                     </div>

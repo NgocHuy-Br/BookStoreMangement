@@ -72,10 +72,11 @@
                                 <tr>
                                     <th style="width: 5%;">STT</th>
                                     <th style="width: 12%;">Mã đơn hàng</th>
-                                    <th style="width: 18%;">Khách hàng</th>
-                                    <th style="width: 18%;">Thời gian tạo</th>
-                                    <th style="width: 15%;">Người tạo</th>
-                                    <th style="width: 15%;">Tổng thành tiền</th>
+                                    <th style="width: 12%;">Khách hàng</th>
+                                    <th style="width: 17%;">Thời gian tạo</th>
+                                    <th style="width: 12%;">Người tạo</th>
+                                    <th style="width: 12%;">Doanh thu</th>
+                                    <th style="width: 12%;">Lợi nhuận</th>
                                     <th style="width: 15%;">Xem đơn hàng</th>
                                 </tr>
                             </thead>
@@ -83,7 +84,7 @@
                                 <c:forEach var="inv" items="${invoices}" varStatus="loop">
                                     <tr>
                                         <td>${loop.index + 1}</td>
-                                        <td>#${inv.id}</td>
+                                        <td>${inv.id}</td>
                                         <td>${inv.customer.name}</td>
                                         <td>
                                             <fmt:formatDate value="${inv.createdAtAsDate}"
@@ -95,6 +96,12 @@
                                             <fmt:formatNumber value="${invoiceTotals[inv.id]}" type="currency"
                                                 currencySymbol="" groupingUsed="true" maxFractionDigits="0" />
                                         </td>
+
+                                        <td>
+                                            <fmt:formatNumber value="${inv.profit}" type="currency" currencySymbol=""
+                                                groupingUsed="true" maxFractionDigits="0" />
+                                        </td>
+
 
                                         <td>
                                             <a href="${pageContext.request.contextPath}/invoice/pdf/${inv.id}"

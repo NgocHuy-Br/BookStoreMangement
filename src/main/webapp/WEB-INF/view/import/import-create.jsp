@@ -114,10 +114,10 @@
                                         </td>
                                         <td class="author">-</td>
                                         <td class="category">-</td>
-                                        <td><input type="number" name="unitPrice" step="1000" class="form-control price"
+                                        <td><input type="number" name="unitPrice" min="1" class="form-control price"
                                                 required onchange="calculateTotal()"></td>
-                                        <td><input type="number" name="quantity" class="form-control quantity" required
-                                                onchange="calculateTotal()"></td>
+                                        <td><input type="number" name="quantity" min="1" value="1"
+                                                class="form-control quantity" required onchange="calculateTotal()"></td>
                                         <td><button type="button" class="btn btn-danger"
                                                 onclick="removeRow(this)">X</button></td>
                                     </tr>
@@ -134,8 +134,8 @@
                             <div class="row mb-2">
                                 <label class="col-sm-2 col-form-label text-end fw-bold">Thuế VAT (%):</label>
                                 <div class="col-sm-2">
-                                    <input type="number" id="vatPercent" name="vat" class="form-control" value="0"
-                                        onchange="calculateTotal()" required>
+                                    <input type="number" id="vatPercent" name="vat" min="0" value="10"
+                                        class="form-control" value="0" onchange="calculateTotal()" required>
                                 </div>
                             </div>
                             <div class="row mb-3">

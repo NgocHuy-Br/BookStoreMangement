@@ -12,6 +12,7 @@ public class Book {
     private String author;
     private Double price;
     private Integer inventory = 0;
+    private Double averageImportPrice = 0.0;
 
     @Transient
     private int soldQuantity;
@@ -86,6 +87,14 @@ public class Book {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Double getAverageImportPrice() {
+        return averageImportPrice;
+    }
+
+    public void setAverageImportPrice(Double averageImportPrice) {
+        this.averageImportPrice = averageImportPrice;
     }
 
     @Override

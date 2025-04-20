@@ -83,7 +83,7 @@
                                 <c:forEach var="order" items="${orders}" varStatus="loop">
                                     <tr>
                                         <td>${loop.index + 1}</td>
-                                        <td>#${order.id}</td>
+                                        <td>${order.id}</td>
                                         <td>${order.supplier.name}</td>
                                         <td>
                                             <fmt:formatDate value="${order.createdAtAsDate}"

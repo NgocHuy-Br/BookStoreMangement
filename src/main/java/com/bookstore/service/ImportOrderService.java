@@ -57,14 +57,59 @@ public class ImportOrderService {
         return total;
     }
 
+    // public ImportOrder createImportOrder(User user, Long supplierId, List<Long>
+    // bookIds, List<Integer> qtys,
+    // List<Double> prices, double vat) {
+    // ImportOrder order = new ImportOrder();
+    // order.setBookstore(user.getBookstore());
+    // order.setCreatedBy(user);
+    // order.setCreatedAt(java.time.LocalDateTime.now());
+    // order.setSupplier(supplierRepo.findById(supplierId).orElse(null));
+    // order.setVatRate(vat); // Lưu VAT của đơn nhập
+    // orderRepo.save(order);
+
+    // for (int i = 0; i < bookIds.size(); i++) {
+    // Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
+    // ImportOrderItem item = new ImportOrderItem();
+    // item.setBook(book);
+    // item.setImportOrder(order);
+    // item.setQuantity(qtys.get(i));
+    // item.setUnitPrice(prices.get(i));
+    // itemRepo.save(item);
+
+    // // update tồn kho
+    // // book.setInventory(book.getInventory() + qtys.get(i));
+    // // bookRepo.save(book);
+    // int currentInventory = book.getInventory();
+    // double currentAvgPrice = book.getAverageImportPrice() != null ?
+    // book.getAverageImportPrice() : 0.0;
+    // int importedQty = qtys.get(i);
+    // double importedPrice = prices.get(i);
+    // // Tính giá trung bình mới (trước VAT)
+    // int totalQty = currentInventory + importedQty;
+    // double newAvgPrice = totalQty == 0 ? 0.0
+    // : ((currentInventory * currentAvgPrice) + (importedQty * importedPrice)) /
+    // totalQty;
+
+    // book.setInventory(totalQty);
+    // book.setAverageImportPrice(newAvgPrice);
+
+    // bookRepo.save(book);
+    // }
+    // return order;
+    // }
     public ImportOrder createImportOrder(User user, Long supplierId, List<Long> bookIds, List<Integer> qtys,
-            List<Double> prices) {
+            List<Double> prices, double vat) {
+
         ImportOrder order = new ImportOrder();
         order.setBookstore(user.getBookstore());
         order.setCreatedBy(user);
         order.setCreatedAt(java.time.LocalDateTime.now());
         order.setSupplier(supplierRepo.findById(supplierId).orElse(null));
+        order.setVatRate(vat); // lưu VAT
         orderRepo.save(order);
+
+        double subtotal = 0;
 
         for (int i = 0; i < bookIds.size(); i++) {
             Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
@@ -75,10 +120,29 @@ public class ImportOrderService {
             item.setUnitPrice(prices.get(i));
             itemRepo.save(item);
 
-            // update tồn kho
-            book.setInventory(book.getInventory() + qtys.get(i));
+            // Cập nhật tồn kho + giá nhập trung bình
+            int currentInventory = book.getInventory();
+            double currentAvgPrice = book.getAverageImportPrice() != null ? book.getAverageImportPrice() : 0.0;
+            int importedQty = qtys.get(i);
+            double importedPrice = prices.get(i);
+
+            int totalQty = currentInventory + importedQty;
+            double newAvgPrice = totalQty == 0 ? 0.0
+                    : ((currentInventory * currentAvgPrice) + (importedQty * importedPrice)) / totalQty;
+
+            book.setInventory(totalQty);
+            book.setAverageImportPrice(newAvgPrice);
             bookRepo.save(book);
+
+            // tính tổng
+            subtotal += importedQty * importedPrice;
         }
+
+        double vatAmount = subtotal * vat / 100;
+        double totalWithVAT = subtotal + vatAmount;
+        order.setTotalAmount(totalWithVAT); // Lưu total thực tế (có VAT)
+
+        orderRepo.save(order); // cập nhật lại đơn với total
 
         return order;
     }

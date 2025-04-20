@@ -4,6 +4,7 @@ import com.bookstore.entity.Book;
 import com.bookstore.entity.Bookstore;
 import com.bookstore.entity.Category;
 import com.bookstore.entity.User;
+import com.bookstore.repository.BookRepository;
 import com.bookstore.service.BookService;
 import com.bookstore.service.CategoryService;
 
@@ -20,6 +21,11 @@ import java.util.List;
 public class BookController {
     @Autowired
     private BookService bookService;
+    @Autowired
+    private BookRepository bookRepo;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("")
     public String listBooks(@RequestParam(required = false) String keyword,
@@ -51,8 +57,13 @@ public class BookController {
         return "book/book-list";
     }
 
-    @Autowired
-    private CategoryService categoryService;
+    @GetMapping("/inventory-asc")
+    public String viewBooksSortedByInventory(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        List<Book> books = bookRepo.findByBookstoreOrderByInventoryAsc(user.getBookstore());
+        model.addAttribute("books", books);
+        return "book/book-list"; // nếu view dùng chung
+    }
 
     @GetMapping("/create")
     public String showCreateBookForm(Model model, HttpSession session) {

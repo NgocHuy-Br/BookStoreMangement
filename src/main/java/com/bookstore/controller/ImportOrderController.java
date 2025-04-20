@@ -50,13 +50,13 @@ public class ImportOrderController {
         double total = importOrderService.calculateTotalWithVAT(orders);
 
         // Gán tổng tiền cho từng đơn để hiển thị trong giao diện
-        for (ImportOrder order : orders) {
-            List<ImportOrderItem> items = importItemRepo.findByImportOrder(order);
-            double sum = items.stream()
-                    .mapToDouble(item -> item.getUnitPrice() * item.getQuantity())
-                    .sum();
-            order.setTotalAmount(sum); // Gán vào trường totalAmount đã có sẵn
-        }
+        // for (ImportOrder order : orders) {
+        // List<ImportOrderItem> items = importItemRepo.findByImportOrder(order);
+        // double sum = items.stream()
+        // .mapToDouble(item -> item.getUnitPrice() * item.getQuantity())
+        // .sum();
+        // order.setTotalAmount(sum); // Gán vào trường totalAmount đã có sẵn
+        // }
 
         model.addAttribute("orders", orders);
         model.addAttribute("totalValue", total);
@@ -104,10 +104,7 @@ public class ImportOrderController {
         }
 
         ImportOrder order = importOrderService.createImportOrder(currentUser, supplierId, bookIdList, quantityList,
-                priceList);
-
-        // Lưu VAT vào session để dùng khi xuất PDF
-        session.setAttribute("vat_import_" + order.getId(), vat);
+                priceList, vat);
 
         // Lấy lại dữ liệu cần hiển thị trong form
         List<Book> books = bookRepo.findByBookstore(currentUser.getBookstore());
@@ -129,10 +126,7 @@ public class ImportOrderController {
 
         List<ImportOrderItem> items = importItemRepo.findByImportOrder(order);
 
-        double vat = 0.0;
-        Object vatObj = session.getAttribute("vat_import_" + id);
-        if (vatObj instanceof Double)
-            vat = (Double) vatObj;
+        double vat = order.getVatRate(); // Lấy trực tiếp từ entity
 
         byte[] pdfBytes = importOrderService.exportImportOrderToPDF(order, items, vat);
 

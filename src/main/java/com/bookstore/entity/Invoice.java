@@ -23,6 +23,8 @@ public class Invoice {
 
     private double vatRate;
 
+    private double profit;
+
     @ManyToOne
     private Customer customer;
 
@@ -99,6 +101,14 @@ public class Invoice {
 
     public void setVatRate(double vatRate) {
         this.vatRate = vatRate;
+    }
+
+    public double getProfit() {
+        return profit;
+    }
+
+    public void setProfit(double profit) {
+        this.profit = profit;
     }
 
     @Override

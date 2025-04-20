@@ -29,4 +29,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                         "(SELECT SUM(i.quantity) FROM InvoiceItem i WHERE i.book = b) DESC")
         List<Book> findTopSellingBooks(@Param("bookstore") Bookstore bookstore, Pageable pageable);
 
+        List<Book> findByBookstoreOrderByInventoryAsc(Bookstore bookstore);
+
 }

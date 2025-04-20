@@ -36,6 +36,22 @@
                             margin: auto;
                         }
                     </style>
+
+                    <style>
+                        .custom-alert {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            border-radius: 6px;
+                            font-weight: 500;
+                        }
+
+                        .alert-container {
+                            display: flex;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        }
+                    </style>
+
                 </head>
 
                 <body>
@@ -43,13 +59,20 @@
                         <h3 class="text-center mb-4">Tạo hóa đơn bán hàng</h3>
 
                         <c:if test="${not empty success}">
-                            <div class="alert alert-success text-center">${success}</div>
+                            <div class="alert-container">
+                                <div class="alert alert-success custom-alert">
+                                    ${success}
+                                </div>
+                            </div>
                         </c:if>
 
                         <c:if test="${not empty error}">
-                            <div class="alert alert-danger text-center">${error}</div>
+                            <div class="alert-container">
+                                <div class="alert alert-danger custom-alert">
+                                    ${error}
+                                </div>
+                            </div>
                         </c:if>
-
 
                         <form method="post" action="/invoice/save">
                             <div class="row mb-3 justify-content-center">
@@ -101,12 +124,13 @@
                                         <td class="author">-</td>
                                         <td class="category">-</td>
                                         <td>
-                                            <input type="number" name="unitPrice" class="form-control price" readonly>
+                                            <input type="number" name="unitPrice" min="1" class="form-control price"
+                                                readonly>
 
 
                                         </td>
-                                        <td><input type="number" name="quantity" class="form-control quantity" required
-                                                onchange="calculateTotal()"></td>
+                                        <td><input type="number" name="quantity" min="1" value="1"
+                                                class="form-control quantity" required onchange="calculateTotal()"></td>
                                         <td><button type="button" class="btn btn-danger"
                                                 onclick="removeRow(this)">X</button></td>
                                     </tr>
@@ -131,8 +155,8 @@
                             <div class="row mb-2">
                                 <label class="col-sm-2 col-form-label text-end fw-bold">Thuế VAT (%):</label>
                                 <div class="col-sm-2">
-                                    <input type="number" id="vatPercent" name="vat" class="form-control" value="0"
-                                        onchange="calculateTotal()" required>
+                                    <input type="number" id="vatPercent" name="vat" min="0" value="10"
+                                        class="form-control" value="0" onchange="calculateTotal()" required>
                                 </div>
                             </div>
 
