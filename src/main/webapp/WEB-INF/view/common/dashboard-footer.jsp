@@ -9,8 +9,17 @@
                 <div><strong>HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG</strong></div>
                 <div><span style="font-weight: bold;">Đồ án môn học: Nhập Môn Công Nghệ Phần Mềm</span></div>
 
-                <!-- ✅ Danh sách thành viên dạng 1 cột: tên trái - mã phải -->
-                <div style="width: 250px; margin: 10px auto; text-align: left;">
+                <div style="width: 280px; margin: 10px auto; text-align: left;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Giảng viên hướng dẫn: </span><span>ThS. Châu Văn Vân</span>
+                    </div>
+                </div>
+
+                <!-- Danh sách thành viên dạng 1 cột: tên trái - mã phải -->
+                <div style="width: 280px; margin: 10px auto; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; text-decoration: underline">
+                        <span>Nhóm sinh viên thực hiện:</span>
+                    </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span>Cao Ngọc Huy</span><span>K24DTCN258</span>
                     </div>

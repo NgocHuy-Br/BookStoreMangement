@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,17 +42,6 @@ public class ImportOrderService {
 
     }
 
-    // public double calculateTotalWithVAT(List<ImportOrder> orders) {
-    // double total = 0;
-    // for (ImportOrder order : orders) {
-    // List<ImportOrderItem> items = itemRepo.findByImportOrder(order);
-    // double sum = items.stream()
-    // .mapToDouble(item -> item.getUnitPrice() * item.getQuantity())
-    // .sum();
-    // total += sum * 1.0; // tạm chưa cộng VAT vì chưa lưu theo đơn
-    // }
-    // return total;
-    // }
     public double calculateTotalWithVAT(List<ImportOrder> orders) {
         return orders.stream()
                 .mapToDouble(order -> order.getTotalAmount() != null ? order.getTotalAmount() : 0.0)
