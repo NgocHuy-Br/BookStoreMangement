@@ -15,21 +15,26 @@ public class LoginInterceptor implements HandlerInterceptor {
             @NonNull HttpServletResponse response,
             @NonNull Object handler) throws Exception {
 
-        HttpSession session = request.getSession(false); // không tạo session mới
+        HttpSession session = request.getSession(false);
         String path = request.getRequestURI();
 
-        if ((session == null || session.getAttribute("loggedInUser") == null)
-                && !path.startsWith("/auth")
-                && !path.startsWith("/unauthorized")
-                && !path.startsWith("/css")
-                && !path.startsWith("/js")
-                && !path.startsWith("/images")
-                && !path.startsWith("/fonts")
-                && !path.equals("/favicon.ico")) {
-            response.sendRedirect("/unauthorized");
+        // Cho phép truy cập các tài nguyên công khai
+        if (path.startsWith("/auth") ||
+                path.startsWith("/css") ||
+                path.startsWith("/js") ||
+                path.startsWith("/images") ||
+                path.startsWith("/fonts") ||
+                path.equals("/favicon.ico")) {
+            return true;
+        }
+
+        // Nếu chưa login thì redirect về login và gắn thông báo
+        if (session == null || session.getAttribute("loggedInUser") == null) {
+            response.sendRedirect("/auth/login?requireLogin=true");
             return false;
         }
 
         return true;
     }
+
 }
