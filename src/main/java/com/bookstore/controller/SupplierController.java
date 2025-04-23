@@ -53,7 +53,7 @@ public class SupplierController {
 
         supplierRepository.save(supplier);
 
-        // Làm sạch returnUrl ở bị lỗi như "/import,/import"
+        // Fix lỗi import
         if (returnUrl != null && returnUrl.contains(",")) {
             returnUrl = returnUrl.split(",")[0];
         }

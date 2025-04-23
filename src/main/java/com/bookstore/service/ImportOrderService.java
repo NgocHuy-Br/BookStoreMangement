@@ -34,8 +34,6 @@ public class ImportOrderService {
                     return (from == null || !date.isBefore(from)) && (to == null || !date.isAfter(to));
                 })
                 .collect(Collectors.toList());
-
-        // return allOrders;
         return allOrders.stream()
                 .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
                 .collect(Collectors.toList());

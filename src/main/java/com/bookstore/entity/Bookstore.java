@@ -28,7 +28,6 @@ public class Bookstore {
         this.customerSetting = customerSetting;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

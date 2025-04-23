@@ -21,7 +21,6 @@ public class ImportOrderItem {
     @ManyToOne
     private Book book;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
 import com.bookstore.entity.Bookstore;
 import com.bookstore.entity.Supplier;
 
-// SupplierRepository.java
 public interface SupplierRepository extends JpaRepositoryImplementation<Supplier, Long> {
     boolean existsByNameIgnoreCaseAndBookstore(String name, Bookstore bookstore);
 

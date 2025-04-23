@@ -54,12 +54,6 @@
                                 </div>
                                 <c:remove var="bookMessage" scope="session" />
                             </c:if>
-                            <!-- 
-                            <c:if test="${param.requireLogin == 'true'}">
-                                <div class="alert alert-warning mt-3 text-center">
-                                    Bạn chưa đăng nhập, vui lòng đăng nhập để truy cập !
-                                </div>
-                            </c:if> -->
 
                             <hr>
                             <div class="text-center">

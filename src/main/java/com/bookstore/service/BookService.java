@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -20,16 +19,11 @@ public class BookService {
     @Autowired
     private ImportOrderItemRepository importOrderItemRepository;
 
-    // public List<Book> getBooksByBookstore(Bookstore bookstore) {
-    // return bookRepository.findByBookstore(bookstore);
-    // }
     public List<Book> getBooksByBookstore(Bookstore bookstore) {
         List<Book> books = bookRepository.findByBookstore(bookstore);
         for (Book book : books) {
             int sold = getSoldQuantity(book);
             book.setSoldQuantity(sold);
-            // Không cần gán lại inventory vì JPA đã map, trừ khi bạn override Book
-            // constructor
         }
         return books;
     }

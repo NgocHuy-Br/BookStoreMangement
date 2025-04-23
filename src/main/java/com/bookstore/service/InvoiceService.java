@@ -87,7 +87,6 @@ public class InvoiceService {
         double totalCost = 0;
         for (int i = 0; i < bookIds.size(); i++) {
             Book book = bookRepo.findById(bookIds.get(i)).orElse(null);
-            // double avgImportPrice = book.getAverageImportPrice();
             double avgImportPrice = book.getAverageImportPrice() != null ? book.getAverageImportPrice() : 0.0;
 
             int qty = quantities.get(i);

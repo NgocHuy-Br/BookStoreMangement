@@ -18,7 +18,6 @@ public class LoginInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession(false);
         String path = request.getRequestURI();
 
-        // Cho phép truy cập các tài nguyên công khai
         if (path.startsWith("/auth") ||
                 path.startsWith("/css") ||
                 path.startsWith("/js") ||
@@ -28,7 +27,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // Nếu chưa login thì redirect về login và gắn thông báo
+        // Nếu chưa login thì redirect về login và thông báo
         if (session == null || session.getAttribute("loggedInUser") == null) {
             response.sendRedirect("/auth/login?requireLogin=true");
             return false;

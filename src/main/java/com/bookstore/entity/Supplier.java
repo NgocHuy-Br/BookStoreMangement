@@ -19,7 +19,6 @@ public class Supplier {
     @ManyToOne
     private Bookstore bookstore;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

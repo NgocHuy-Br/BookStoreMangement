@@ -26,7 +26,6 @@ public class BookController {
 
     @Autowired
     private CategoryService categoryService;
-    
 
     @GetMapping("")
     public String listBooks(@RequestParam(required = false) String keyword,
@@ -48,7 +47,7 @@ public class BookController {
             books = bookService.getBooksByBookstore(bookstore);
         }
 
-        // Tính số lượng bán ra
+        // Tính số lượng đã bán ra
         for (Book book : books) {
             int soldQty = bookService.getSoldQuantity(book);
             book.setSoldQuantity(soldQty);
@@ -63,7 +62,7 @@ public class BookController {
         User user = (User) session.getAttribute("loggedInUser");
         List<Book> books = bookRepo.findByBookstoreOrderByInventoryAsc(user.getBookstore());
         model.addAttribute("books", books);
-        return "book/book-list"; // nếu view dùng chung
+        return "book/book-list";
     }
 
     @GetMapping("/create")
@@ -74,7 +73,7 @@ public class BookController {
         }
 
         Book book = new Book();
-        book.setInventory(0); // số lượng mặc định
+        book.setInventory(0); // số lượng mặc định 0
 
         // Lấy danh sách danh mục theo bookstore của admin đang đăng nhập
         List<Category> categories = categoryService.getCategoriesByBookstore(currentUser.getBookstore());

@@ -13,7 +13,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.OutputStream;
 import java.time.LocalDate;
@@ -117,7 +116,6 @@ public class ImportOrderController {
 
         List<ImportOrderItem> items = importItemRepo.findByImportOrder(order);
 
-        // double vat = order.getVatRate();
         double vat = order.getVatRate() != null ? order.getVatRate() : 0.0;// Lấy trực tiếp từ entity
         
         byte[] pdfBytes = importOrderService.exportImportOrderToPDF(order, items, vat);

@@ -3,7 +3,7 @@ package com.bookstore.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users") // tránh xung đột với từ khóa SQL
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,13 +11,12 @@ public class User {
 
     private String username;
     private String password;
-    private String role; // "ADMIN" hoặc "EMPLOYEE"
+    private String role; // ADMIN hoặc EMPLOYEE
 
     @ManyToOne
     @JoinColumn(name = "bookstore_id")
     private Bookstore bookstore;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

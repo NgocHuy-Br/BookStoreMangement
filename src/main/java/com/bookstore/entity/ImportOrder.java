@@ -32,7 +32,6 @@ public class ImportOrder {
     @ManyToOne
     private Bookstore bookstore;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -30,7 +30,6 @@ public class Customer {
         this.invoices = invoices;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
